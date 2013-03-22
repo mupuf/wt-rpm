@@ -1,0 +1,68 @@
+<?xml version="1.0"?><svg width="50" height="50" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title>on/off Green light</title>
+ <defs>
+  <linearGradient y2="0.154336" y1="1.1441" xlink:href="#linearGradient6506" x2="0.566583" x1="0.577235" id="linearGradient9413"/>
+  <linearGradient id="linearGradient9345">
+   <stop stop-color="#5a5a5a" offset="0" id="stop9347"/>
+   <stop stop-color="#a9a9a9" offset="1" id="stop9349"/>
+  </linearGradient>
+  <linearGradient y2="0.998411" y1="0.046358" xlink:href="#linearGradient9345" x2="0.408296" x1="0.418947" id="linearGradient9411"/>
+  <linearGradient y2="0.846351" y1="0.057496" xlink:href="#linearGradient5756" x2="0.609143" x1="0.532859" id="linearGradient9409"/>
+  <linearGradient y2="1" y1="0.019227" xlink:href="#linearGradient5742" x2="0.500488" x1="0.496181" id="linearGradient9407"/>
+  <linearGradient id="linearGradient6506">
+   <stop stop-color="#ffffff" stop-opacity="0" offset="0" id="stop6508"/>
+   <stop stop-color="#ffffff" stop-opacity="0.87451" offset="1" id="stop6510"/>
+  </linearGradient>
+  <linearGradient id="linearGradient5756">
+   <stop stop-color="#828282" offset="0" id="stop5758"/>
+   <stop stop-color="#929292" stop-opacity="0.352941" offset="1" id="stop5760"/>
+  </linearGradient>
+  <linearGradient id="linearGradient5742">
+   <stop stop-color="#adadad" offset="0" id="stop5744"/>
+   <stop stop-color="#f0f0f0" offset="1" id="stop5746"/>
+  </linearGradient>
+  <linearGradient y2="42.883698" y1="44.066776" xlink:href="#svg_19" x2="23.389874" x1="23.402565" id="svg_11" gradientUnits="userSpaceOnUse"/>
+  <linearGradient id="svg_38">
+   <stop stop-color="#0f6900" offset="0" id="svg_40"/>
+   <stop stop-color="#a3ff87" offset="1" id="svg_39"/>
+  </linearGradient>
+  <linearGradient y2="43.892632" y1="42.754631" xlink:href="#svg_38" x2="23.20129" x1="23.21398" id="svg_13" gradientUnits="userSpaceOnUse"/>
+  <linearGradient y2="43.710873" y1="42.767944" xlink:href="#svg_23" x2="23.44058" x1="23.349695" id="svg_15" gradientUnits="userSpaceOnUse"/>
+  <linearGradient y2="44" y1="42.42923" xlink:href="#svg_25" x2="23.200001" x1="23.193102" id="svg_17" gradientUnits="userSpaceOnUse"/>
+  <linearGradient id="svg_19">
+   <stop stop-color="#ffffff" stop-opacity="0" offset="0" id="svg_37"/>
+   <stop stop-color="#ffffff" stop-opacity="0.87451" offset="1" id="svg_36"/>
+  </linearGradient>
+  <linearGradient id="svg_23">
+   <stop stop-color="#828282" offset="0" id="svg_31"/>
+   <stop stop-color="#929292" stop-opacity="0.352941" offset="1" id="svg_30"/>
+  </linearGradient>
+  <linearGradient id="svg_25">
+   <stop stop-color="#adadad" offset="0" id="svg_28"/>
+   <stop stop-color="#f0f0f0" offset="1" id="svg_27"/>
+  </linearGradient>
+  <symbol xmlns:xlink="http://www.w3.org/1999/xlink" width="50px" id="svg_41" height="50px">
+
+   <g id="svg_8">
+    <g transform="matrix(31.25000,0.000000,0.000000,31.25000,-700.0000,-1400.000)" id="svg_9">
+     <path fill="url(#svg_17)" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="4" transform="translate(-1.194400e-6,2.399999)" id="svg_16" d="m24,43.200001c0,0.441601 -0.3584,0.799999 -0.799999,0.799999c-0.441601,0 -0.800001,-0.358398 -0.800001,-0.799999c0,-0.441601 0.3584,-0.799999 0.800001,-0.799999c0.441599,0 0.799999,0.358398 0.799999,0.799999z"/>
+     <path fill="url(#svg_15)" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="4" transform="matrix(1.082474,0.000000,0.000000,1.082474,-2.032392,-1.267015)" id="svg_14" d="m23.906361,43.2962c0,0.329231 -0.2672,0.596432 -0.59643,0.596432c-0.329231,0 -0.596432,-0.2672 -0.596432,-0.596432c0,-0.32922 0.2672,-0.59642 0.596432,-0.59642c0.329229,0 0.59643,0.2672 0.59643,0.59642z"/>
+     <path fill="url(#svg_13)" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="4" transform="matrix(0.969072,0.000000,0.000000,0.969072,0.611001,3.642861)" id="svg_12" d="m23.906361,43.2962c0,0.329231 -0.2672,0.596432 -0.59643,0.596432c-0.329231,0 -0.596432,-0.2672 -0.596432,-0.596432c0,-0.32922 0.2672,-0.59642 0.596432,-0.59642c0.329229,0 0.59643,0.2672 0.59643,0.59642z"/>
+     <path fill="url(#svg_11)" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="4" transform="matrix(0.773196,0.000000,0.000000,0.597938,5.176113,19.51876)" id="svg_10" d="m23.906361,43.2962c0,0.329231 -0.2672,0.596432 -0.59643,0.596432c-0.329231,0 -0.596432,-0.2672 -0.596432,-0.596432c0,-0.32922 0.2672,-0.59642 0.596432,-0.59642c0.329229,0 0.59643,0.2672 0.59643,0.59642z"/>
+    </g>
+   </g>
+  </symbol>
+ </defs>
+ <g>
+  <title>Layer 2</title>
+  <g id="layer1">
+   <g id="svg_2" transform="matrix(7.4375, 0, 0, 7.4375, -184.456, -315.35)">
+    <path id="svg_3" fill="url(#linearGradient9407)" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="4" d="m26.407572,43.213551c0,0.441601 -0.3584,0.799999 -0.799999,0.799999c-0.441601,0 -0.800001,-0.358398 -0.800001,-0.799999c0,-0.441601 0.3584,-0.799999 0.800001,-0.799999c0.441599,0 0.799999,0.358398 0.799999,0.799999z"/>
+    <path id="svg_4" fill="url(#linearGradient9409)" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="4" d="m26.253195,43.213547c0,0.356384 -0.289238,0.645618 -0.64562,0.645618c-0.356384,0 -0.64562,-0.289234 -0.64562,-0.645618c0,-0.356373 0.289236,-0.645611 0.64562,-0.645611c0.356382,0 0.64562,0.289238 0.64562,0.645611z"/>
+    <path id="svg_5" fill="url(#linearGradient9411)" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="4" d="m26.185558,43.213547c0,0.319046 -0.258936,0.577984 -0.577984,0.577984c-0.319048,0 -0.577984,-0.258938 -0.577984,-0.577984c0,-0.319038 0.258936,-0.577976 0.577984,-0.577976c0.319048,0 0.577984,0.258938 0.577984,0.577976z"/>
+    <path id="svg_6" fill="url(#linearGradient9413)" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="4" d="m26.067987,43.020744c0,0.196857 -0.206598,0.356628 -0.461157,0.356628c-0.25456,0 -0.461159,-0.159771 -0.461159,-0.356628c0,-0.196854 0.206598,-0.356625 0.461159,-0.356625c0.254559,0 0.461157,0.159771 0.461157,0.356625z"/>
+   </g>
+  </g>
+  <use x="-244.820031" y="-355.120229" transform="matrix(0.237307, 0, 0, 0.237307, 70.1477, 84.3231)" xlink:href="#svg_41" id="svg_42"/>
+ </g>
+</svg>
