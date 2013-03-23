@@ -78,7 +78,7 @@ RaspRPM::RaspRPM(std::shared_ptr<Wt::WServer> server, Wt::Json::Object conf) : A
 {
 	parseConfiguration(conf);
 
-	for (int i = 0; i < _computers.size(); i++)
+	for (size_t i = 0; i < _computers.size(); i++)
 		addComputer(_computers[i].name);
 
 	/* to be replaced by something less hackish */
