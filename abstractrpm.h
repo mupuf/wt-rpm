@@ -3,18 +3,22 @@
 
 #include <Wt/WObject>
 #include <Wt/WString>
+#include <Wt/WServer>
 #include <boost/signal.hpp>
 
-class View;
 class ComputerView;
+class View;
 
 class AbstractRPM : public Wt::WObject
 {
 private:
-	std::map< Wt::WString, bool > powerLedState;
-	std::map< Wt::WString, std::shared_ptr<ComputerView> > _computers;
+	std::map< Wt::WString, bool > _powerLedState;
+	std::map< Wt::WString, Wt::WString > _computerLogs;
 
-	View *view;
+	std::set<Wt::WString> _computers;
+
+	std::shared_ptr<Wt::WServer> server;
+	std::vector< View* > views;
 
 protected:
 	void setPowerLedState(const Wt::WString &computerName, bool state);
@@ -23,7 +27,10 @@ protected:
 	bool addComputer(const Wt::WString &computerName);
 
 public:
-	AbstractRPM(View *view);
+	AbstractRPM(std::shared_ptr<Wt::WServer> server);
+
+	void addView(View* view);
+	bool deleteView(View* view);
 
 	/* input events */
 	virtual void atx_force_off(const Wt::WString &computerName) = 0;

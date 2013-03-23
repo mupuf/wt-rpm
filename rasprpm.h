@@ -7,11 +7,9 @@
 
 class RaspRPM : public AbstractRPM
 {
-	Wt::WTimer pollingTimer;
-
-	void pollInputs();
+	static void pollInputs(int signal);
 public:
-	RaspRPM(View *view);
+	RaspRPM(std::shared_ptr<Wt::WServer> server);
 
 	void atx_force_off(const Wt::WString &computerName);
 	void atx_force_on(const Wt::WString &computerName);

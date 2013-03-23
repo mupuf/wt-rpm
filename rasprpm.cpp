@@ -1,25 +1,32 @@
 #include "rasprpm.h"
 
+#include <signal.h>
+
 #include <iostream>
 #include <cstdlib>
+#include <boost/asio.hpp>
+#include <boost/bind.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
-void RaspRPM::pollInputs()
+RaspRPM *thiss;
+
+void RaspRPM::pollInputs(int signal)
 {
 	int random = (rand() % 2);
 	std::cerr << "Poll: random = " << random << std::endl;
-	setPowerLedState("cathaou", random);
+	thiss->setPowerLedState("cathaou", random);
+	alarm(1);
 }
 
-RaspRPM::RaspRPM(View *view) : AbstractRPM(view)
+RaspRPM::RaspRPM(std::shared_ptr<Wt::WServer> server) : AbstractRPM(server)
 {
 	/* TODO: Parse the configuration file */
 	addComputer("reator");
 	addComputer("cathaou");
+	thiss = this;
 
-	/* setup the timer to update the LED status */
-	pollingTimer.setInterval(250);
-	pollingTimer.timeout().connect(this, &RaspRPM::pollInputs);
-	pollingTimer.start();
+	::signal(SIGALRM, RaspRPM::pollInputs);
+	alarm(1);
 }
 
 void RaspRPM::atx_force_off(const Wt::WString &computerName)

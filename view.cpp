@@ -15,16 +15,15 @@
 
 #include "util.h"
 
-View::View(const Wt::WEnvironment& env, Wt::WServer &server) :
-	Wt::WApplication(env)
+View::View(const Wt::WEnvironment& env, std::shared_ptr<Wt::WServer> /*server*/, std::shared_ptr<AbstractRPM> rpm) :
+	Wt::WApplication(env), rpm(rpm)
 {
 	Wt::WString welcomeMsg = "Welcome to the Remote Power Manager (RPM)";
 
-	Wt::WApplication *app = Wt::WApplication::instance();
-	app->enableUpdates(true);
-	app->setLoadingIndicator(new Wt::WOverlayLoadingIndicator());
-	app->styleSheet().addRule("body", "background-color: #eeeeee;");
-	app->styleSheet().addRule(".computer", "background-color: #e0e0e0; border-style:solid; border-width: 2px; -moz-border-radius: 15px; border-radius: 15px;");
+	this->enableUpdates(true);
+	this->setLoadingIndicator(new Wt::WOverlayLoadingIndicator());
+	this->styleSheet().addRule("body", "background-color: #eeeeee;");
+	this->styleSheet().addRule(".computer", "background-color: #e0e0e0; border-style:solid; border-width: 2px; -moz-border-radius: 15px; border-radius: 15px;");
 
 	/* Application root fixup */
 	std::cerr << "Application root = '" << Wt::WApplication::appRoot()
@@ -40,7 +39,7 @@ View::View(const Wt::WEnvironment& env, Wt::WServer &server) :
 
 	Wt::WText *title = new Wt::WText(welcomeMsg);
 	title->setStyleClass("WelcomeMsg");
-	app->styleSheet().addRule(".WelcomeMsg", "font-size: 36px; text-transform: capitalize;");
+	this->styleSheet().addRule(".WelcomeMsg", "font-size: 36px; text-transform: capitalize;");
 	verticalLayout->addWidget(title, 0, Wt::AlignCenter);
 
 	verticalLayout->addSpacing(50);
@@ -57,12 +56,23 @@ View::View(const Wt::WEnvironment& env, Wt::WServer &server) :
 	w->setLayout(verticalLayout);
 }
 
-void View::addComputer(ComputerView *view)
+View::~View()
 {
+	rpm->deleteView(this);
+}
+
+void View::addComputer(const Wt::WString &computerName, std::shared_ptr<ComputerView> view)
+{
+	_computers[computerName] = view;
+
 	view->setStyleClass("computer");
 	view->setMinimumSize(300, 150);
 
-	_horizontalLayout->addWidget(view);
+	_horizontalLayout->addWidget(view.get());
 }
 
+std::shared_ptr<ComputerView> View::getComputer(const Wt::WString &computerName)
+{
+	return _computers[computerName];
+}
 

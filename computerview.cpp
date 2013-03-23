@@ -51,12 +51,10 @@ Wt::WFileResource *ComputerView::getImg(const Wt::WString &name)
 	return new Wt::WFileResource(mime, path);
 }
 
-ComputerView::ComputerView(const Wt::WString &computerName, Wt::WContainerWidget *parent) :
+ComputerView::ComputerView(Wt::WApplication *app, const Wt::WString &computerName, Wt::WContainerWidget *parent) :
 	Wt::WContainerWidget(parent),
-	_computerName(computerName), _img_led(NULL)
+	app(app), _computerName(computerName), _img_led(NULL)
 {
-	Wt::WApplication *app = Wt::WApplication::instance();
-
 	Wt::WBoxLayout *layout = new Wt::WBoxLayout(Wt::WBoxLayout::TopToBottom, this);
 
 	_title = new Wt::WText(computerName);
@@ -114,7 +112,7 @@ void ComputerView::powerLedStatusChanged(bool status)
 	}
 	else {
 		_img_led->setImageLink(getImg(file));
-		Wt::WApplication::instance()->triggerUpdate();
+		app->triggerUpdate();
 	}
 }
 

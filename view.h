@@ -5,20 +5,27 @@
 #include <Wt/WVBoxLayout>
 #include <Wt/WEnvironment>
 
+#include "abstractrpm.h"
 #include "computerview.h"
 
 #include <memory>
 #include <vector>
+#include <map>
 
 class View : public Wt::WApplication
 {
 private:
+	std::shared_ptr<AbstractRPM> rpm;
 	Wt::WBoxLayout *_horizontalLayout;
 
-public:
-	View(const Wt::WEnvironment &env, Wt::WServer &server);
+	std::map< Wt::WString, std::shared_ptr<ComputerView> > _computers;
 
-	void addComputer(ComputerView *view);
+public:
+	View(const Wt::WEnvironment &env, std::shared_ptr<Wt::WServer> server, std::shared_ptr<AbstractRPM> rpm);
+	~View();
+
+	void addComputer(const Wt::WString &computerName, std::shared_ptr<ComputerView> view);
+	std::shared_ptr<ComputerView> getComputer(const Wt::WString &computerName);
 };
 
 #endif // VIEW_H

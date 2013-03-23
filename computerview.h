@@ -8,6 +8,7 @@
 class ComputerView : public Wt::WContainerWidget
 {
 private:
+	Wt::WApplication *app;
 	Wt::WString _computerName;
 	bool _ledStatus;
 	bool _powerStatus;
@@ -31,7 +32,7 @@ private:
 
 	Wt::WFileResource *getImg(const Wt::WString &name);
 public:
-	ComputerView(const Wt::WString &computerName, Wt::WContainerWidget *parent = NULL);
+	ComputerView(Wt::WApplication *app, const Wt::WString &computerName, Wt::WContainerWidget *parent = NULL);
 
 	Wt::WString computerName() const { return _computerName; };
 
