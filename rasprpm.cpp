@@ -89,6 +89,7 @@ RaspRPM::RaspRPM(std::shared_ptr<Wt::WServer> server, Wt::Json::Object conf) : A
 
 void RaspRPM::atx_force_off(const Wt::WString &computerName)
 {
+	consoleAddData(computerName, "ATX force off");
 	std::cerr << computerName << " : ATX force off" << std::endl;
 }
 

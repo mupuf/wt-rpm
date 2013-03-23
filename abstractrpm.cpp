@@ -4,6 +4,9 @@
 
 #include <boost/bind.hpp>
 
+#include <Wt/WDate>
+#include <Wt/WTime>
+
 AbstractRPM::AbstractRPM(std::shared_ptr<Wt::WServer> server) : server(server)
 {
 
@@ -11,7 +14,12 @@ AbstractRPM::AbstractRPM(std::shared_ptr<Wt::WServer> server) : server(server)
 
 void AbstractRPM::setPowerLedState(const Wt::WString &computerName, bool state)
 {
-	if (this->_powerLedState[computerName] == state)
+	computerStateLock.lock();
+	bool last_state = this->_powerLedState[computerName];
+	this->_powerLedState[computerName] = state;
+	computerStateLock.unlock();
+
+	if (last_state == state)
 		return;
 
 	for (size_t i = 0; i < views.size(); i++) {
@@ -20,18 +28,22 @@ void AbstractRPM::setPowerLedState(const Wt::WString &computerName, bool state)
 		server->post(view->sessionId(), boost::bind(&ComputerView::powerLedStatusChanged, cview, state));
 	}
 
-	this->_powerLedState[computerName] = state;
-
 }
 
 void AbstractRPM::consoleAddData(const Wt::WString &computerName, const Wt::WString &data)
 {
-	_computerLogs[computerName] += data;
+	Wt::WString date = Wt::WDate::currentServerDate().toString("yyyy/MM/dd");
+	Wt::WString time = Wt::WTime::currentServerTime().toString("hh:mm:ss");
+	Wt::WString entry = date + " - " + time + " : " + data + "\n";
+
+	computerStateLock.lock();
+	_computerLogs[computerName] += entry;
+	computerStateLock.unlock();
 
 	for (size_t i = 0; i < views.size(); i++) {
 		View *view = views[i];
 		ComputerView *cview = view->getComputer(computerName).get();
-		server->post(view->sessionId(), boost::bind(&ComputerView::consoleDataAdded, cview, data));
+		server->post(view->sessionId(), boost::bind(&ComputerView::consoleDataAdded, cview, entry));
 	}
 }
 
@@ -63,7 +75,10 @@ void AbstractRPM::addView(View *view)
 		computer->sig_pwSwitchForceOff.connect(boost::bind(&AbstractRPM::pw_switch_force_off, this, computerName));
 
 		/* send the current logs */
-		server->post(view->sessionId(), boost::bind(&ComputerView::consoleDataAdded, computer.get(), _computerLogs[computerName]));
+		computerStateLock.lock();
+		Wt::WString logs = _computerLogs[computerName];
+		computerStateLock.unlock();
+		server->post(view->sessionId(), boost::bind(&ComputerView::consoleDataAdded, computer.get(), logs));
 
 		view->addComputer(computerName, computer);
 	}

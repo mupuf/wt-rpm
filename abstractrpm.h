@@ -5,6 +5,7 @@
 #include <Wt/WString>
 #include <Wt/WServer>
 #include <boost/signal.hpp>
+#include <boost/thread/mutex.hpp>
 
 class ComputerView;
 class View;
@@ -12,6 +13,7 @@ class View;
 class AbstractRPM : public Wt::WObject
 {
 private:
+	boost::mutex computerStateLock;
 	std::map< Wt::WString, bool > _powerLedState;
 	std::map< Wt::WString, Wt::WString > _computerLogs;
 

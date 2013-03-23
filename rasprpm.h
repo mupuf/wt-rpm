@@ -30,6 +30,7 @@ class RaspRPM : public AbstractRPM
 	bool parseConfiguration(Wt::Json::Object &conf);
 	bool parseComputer(Wt::Json::Object &computer);
 	Gpio parseGpio(Wt::Json::Object &gpio);
+
 public:
 	RaspRPM(std::shared_ptr<Wt::WServer> server, Wt::Json::Object conf);
 
