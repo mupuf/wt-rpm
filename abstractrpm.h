@@ -20,7 +20,7 @@ protected:
 	void setPowerLedState(const Wt::WString &computerName, bool state);
 	void consoleAddData(const Wt::WString &computerName, const Wt::WString &data);
 
-	void addComputer(const Wt::WString &computerName);
+	bool addComputer(const Wt::WString &computerName);
 
 public:
 	AbstractRPM(View *view);

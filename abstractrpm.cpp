@@ -22,8 +22,11 @@ void AbstractRPM::consoleAddData(const Wt::WString &computerName, const Wt::WStr
 	_computers[computerName]->consoleDataAdded(data);
 }
 
-void AbstractRPM::addComputer(const Wt::WString &computerName)
+bool AbstractRPM::addComputer(const Wt::WString &computerName)
 {
+	if (_computers.find(computerName) != _computers.end())
+		return false;
+
 	std::shared_ptr<ComputerView> computer(new ComputerView(computerName));
 
 	/* view --> backend */
@@ -36,4 +39,6 @@ void AbstractRPM::addComputer(const Wt::WString &computerName)
 	_computers[computerName] = computer;
 
 	view->addComputer(computer.get());
+
+	return true;
 }
