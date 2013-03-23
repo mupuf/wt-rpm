@@ -5,14 +5,14 @@
 #include <iostream>
 
 template <class type_t>
-	type_t readJSONValue(Wt::Json::Object result, const std::string &key, type_t defaultValue = type_t()) {
-		try {
-			return result.get(key);
-		} catch (Wt::WException error) {
-			std::cerr << "Attribute '" << key << "' is invalid: " << error.what() << std::endl;
-			return defaultValue;
-		}
+type_t readJSONValue(Wt::Json::Object result, const std::string &key, type_t defaultValue = type_t()) {
+	try {
+		return result.get(key);
+	} catch (Wt::WException error) {
+		std::cerr << "Attribute '" << key << "' is invalid: " << error.what() << std::endl;
+		return defaultValue;
 	}
+}
 
 class ConfParser
 {
