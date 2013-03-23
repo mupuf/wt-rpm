@@ -44,9 +44,9 @@ View::View(const Wt::WEnvironment& env, std::shared_ptr<Wt::WServer> /*server*/,
 
 	verticalLayout->addSpacing(50);
 
-	_horizontalLayout = new Wt::WBoxLayout(Wt::WBoxLayout::RightToLeft);
-	_horizontalLayout->addStretch(1);
-	verticalLayout->addLayout(_horizontalLayout);
+	_horizontalLayout = new Wt::WBoxLayout(Wt::WBoxLayout::LeftToRight);
+	//_horizontalLayout->addStretch(1);
+	verticalLayout->addLayout(_horizontalLayout, 0, Wt::AlignCenter);
 
 	verticalLayout->addSpacing(50);
 
@@ -66,7 +66,7 @@ void View::addComputer(const Wt::WString &computerName, std::shared_ptr<Computer
 	_computers[computerName] = view;
 
 	view->setStyleClass("computer");
-	view->setMinimumSize(400, 150);
+	view->setMinimumSize(500, 150);
 
 	_horizontalLayout->addWidget(view.get());
 }
