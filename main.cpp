@@ -1,23 +1,11 @@
 #include "view.h"
 #include "util.h"
 
-#include <Wt/WEnvironment>
 #include <Wt/WServer>
 #include <signal.h>
 
 #include "abstractrpm.h"
 #include "rasprpm.h"
-
-std::string getValueFromEnv(const Wt::WEnvironment& env,
-		const std::string &key,
-		const std::string &defaultValue)
-{
-	std::vector<std::string> param = env.getParameterValues(key);
-	if (param.size() > 0) {
-		return param[0];
-	} else
-		return defaultValue;
-}
 
 Wt::WApplication *createApplication(const Wt::WEnvironment& env,
 					Wt::WServer &server)

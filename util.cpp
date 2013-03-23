@@ -44,3 +44,14 @@ std::string getExeDirectory()
 	else
 		return std::string();
 }
+
+std::string getValueFromEnv(const Wt::WEnvironment& env,
+		const std::string &key,
+		const std::string &defaultValue)
+{
+	std::vector<std::string> param = env.getParameterValues(key);
+	if (param.size() > 0) {
+		return param[0];
+	} else
+		return defaultValue;
+}
