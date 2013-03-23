@@ -26,18 +26,21 @@ void AbstractRPM::setPowerLedState(const Wt::WString &computerName, bool state)
 		View *view = views[i];
 		ComputerView *cview = view->getComputer(computerName).get();
 		server->post(view->sessionId(), boost::bind(&ComputerView::powerLedStatusChanged, cview, state));
-	}
 
+		/* add some logs */
+		Wt::WString msg = "The power LED went " + Wt::WString(state?"ON":"OFF");
+		consoleAddData(computerName, msg);
+	}
 }
 
 void AbstractRPM::consoleAddData(const Wt::WString &computerName, const Wt::WString &data)
 {
 	Wt::WString date = Wt::WDate::currentServerDate().toString("yyyy/MM/dd");
 	Wt::WString time = Wt::WTime::currentServerTime().toString("hh:mm:ss");
-	Wt::WString entry = date + " - " + time + " : " + data + "\n";
+	Wt::WString entry = date + "-" + time + ": " + data + "\n";
 
 	computerStateLock.lock();
-	_computerLogs[computerName] += entry;
+	_computerLogs[computerName] = entry + _computerLogs[computerName];
 	computerStateLock.unlock();
 
 	for (size_t i = 0; i < views.size(); i++) {

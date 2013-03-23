@@ -66,7 +66,7 @@ void View::addComputer(const Wt::WString &computerName, std::shared_ptr<Computer
 	_computers[computerName] = view;
 
 	view->setStyleClass("computer");
-	view->setMinimumSize(300, 150);
+	view->setMinimumSize(400, 150);
 
 	_horizontalLayout->addWidget(view.get());
 }

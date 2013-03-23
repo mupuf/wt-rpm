@@ -9,6 +9,7 @@
 #include <Wt/WPushButton>
 #include <Wt/WFileResource>
 #include <Wt/WLabel>
+#include <Wt/WTextArea>
 
 #include "util.h"
 
@@ -96,7 +97,18 @@ ComputerView::ComputerView(Wt::WApplication *app, const Wt::WString &computerNam
 
 	layout->addLayout(grid);
 
-	layout->addSpacing(20);
+	layout->addSpacing(10);
+
+	Wt::WLabel *label = new Wt::WLabel("Logs:");
+	layout->addWidget(label);
+
+	_logs_edit = new Wt::WTextArea("");
+	_logs_edit->setHeight(150);
+	_logs_edit->setMaximumSize(Wt::WLength::Auto, 150);
+	label->setBuddy(_logs_edit);
+	layout->addWidget(_logs_edit);
+
+	layout->addSpacing(10);
 }
 
 void ComputerView::powerLedStatusChanged(bool status)
@@ -118,7 +130,6 @@ void ComputerView::powerLedStatusChanged(bool status)
 
 void ComputerView::consoleDataAdded(const Wt::WString &data)
 {
-	std::cerr << computerName().toUTF8() << " : " << data.toUTF8() << std::endl;
-
-	Wt::WApplication::instance()->triggerUpdate();
+	_logs_edit->setValueText(data + _logs_edit->valueText());
+	app->triggerUpdate();
 }

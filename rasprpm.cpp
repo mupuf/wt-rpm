@@ -90,25 +90,24 @@ RaspRPM::RaspRPM(std::shared_ptr<Wt::WServer> server, Wt::Json::Object conf) : A
 void RaspRPM::atx_force_off(const Wt::WString &computerName)
 {
 	consoleAddData(computerName, "ATX force off");
-	std::cerr << computerName << " : ATX force off" << std::endl;
 }
 
 void RaspRPM::atx_force_on(const Wt::WString &computerName)
 {
-	std::cerr << computerName << " : ATX force on" << std::endl;
+	consoleAddData(computerName, "ATX force on");
 }
 
 void RaspRPM::atx_reset(const Wt::WString &computerName)
 {
-	std::cerr << computerName << " : ATX reset" << std::endl;
+	consoleAddData(computerName, "ATX reset");
 }
 
 void RaspRPM::pw_switch_press(const Wt::WString &computerName)
 {
-	std::cerr << computerName << " : Power switch clicked" << std::endl;
+	consoleAddData(computerName, "Power switch pressed");
 }
 
 void RaspRPM::pw_switch_force_off(const Wt::WString &computerName)
 {
-	std::cerr << computerName << " : Power switch force off" << std::endl;
+	consoleAddData(computerName, "Power switch forced off");
 }

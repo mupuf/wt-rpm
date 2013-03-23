@@ -23,6 +23,7 @@ private:
 	Wt::WPushButton *_btn_pw_switch_force_off;
 
 	Wt::WImage *_img_led;
+	Wt::WTextArea *_logs_edit;
 
 	void btn_atx_force_off_clicked();
 	void btn_atx_force_on_clicked();
