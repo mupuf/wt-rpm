@@ -47,8 +47,6 @@ Wt::WFileResource *ComputerView::getImg(const Wt::WString &name)
 	if (ext_found != std::string::npos)
 		mime = "image/" + name.toUTF8().substr(ext_found + 1);
 
-	std::cerr << "path = " << path << std::endl;
-
 	return new Wt::WFileResource(mime, path);
 }
 

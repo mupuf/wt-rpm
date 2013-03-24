@@ -22,15 +22,17 @@ void AbstractRPM::setPowerLedState(const Wt::WString &computerName, bool state)
 	if (last_state == state)
 		return;
 
+	viewsLock.lock();
 	for (size_t i = 0; i < views.size(); i++) {
 		View *view = views[i];
 		ComputerView *cview = view->getComputer(computerName).get();
 		server->post(view->sessionId(), boost::bind(&ComputerView::powerLedStatusChanged, cview, state));
-
-		/* add some logs */
-		Wt::WString msg = "The power LED went " + Wt::WString(state?"ON":"OFF");
-		consoleAddData(computerName, msg);
 	}
+	viewsLock.unlock();
+
+	/* add some logs */
+	Wt::WString msg = "The power LED went " + Wt::WString(state?"ON":"OFF");
+	consoleAddData(computerName, msg);
 }
 
 void AbstractRPM::consoleAddData(const Wt::WString &computerName, const Wt::WString &data)
@@ -43,36 +45,48 @@ void AbstractRPM::consoleAddData(const Wt::WString &computerName, const Wt::WStr
 	_computerLogs[computerName] = entry + _computerLogs[computerName];
 	computerStateLock.unlock();
 
+	viewsLock.lock();
 	for (size_t i = 0; i < views.size(); i++) {
 		View *view = views[i];
 		ComputerView *cview = view->getComputer(computerName).get();
+		std::cerr << "view[" << i << "/" << views.size() << "] (" << view << ") " << computerName << std::endl;
 		server->post(view->sessionId(), boost::bind(&ComputerView::consoleDataAdded, cview, entry));
 	}
+	viewsLock.unlock();
 }
 
 void AbstractRPM::setPingDelay(const Wt::WString &computerName, double delay)
 {
+	viewsLock.lock();
 	for (size_t i = 0; i < views.size(); i++) {
 		View *view = views[i];
 		ComputerView *cview = view->getComputer(computerName).get();
 		server->post(view->sessionId(), boost::bind(&ComputerView::setPingDelay, cview, delay));
 	}
+	viewsLock.unlock();
 }
 
 bool AbstractRPM::addComputer(const Wt::WString &computerName)
 {
+	bool ret = true;
+
+	computerStateLock.lock();
 	if (_computers.find(computerName) != _computers.end())
-		return false;
+		ret = false;
+	else
+		_computers.insert(computerName);
+	computerStateLock.unlock();
 
-	_computers.insert(computerName);
-
-	return true;
+	return ret;
 }
 
 void AbstractRPM::addView(View *view)
 {
+	viewsLock.lock();
 	views.push_back(view);
+	viewsLock.unlock();
 
+	computerStateLock.lock();
 	std::set<Wt::WString>::iterator it;
 	for (it = _computers.begin(); it != _computers.end(); ++it) {
 		Wt::WString computerName = *it;
@@ -87,25 +101,27 @@ void AbstractRPM::addView(View *view)
 		computer->sig_pwSwitchForceOff.connect(boost::bind(&AbstractRPM::pw_switch_force_off, this, computerName));
 
 		/* send the current logs */
-		computerStateLock.lock();
 		Wt::WString logs = _computerLogs[computerName];
-		computerStateLock.unlock();
 		server->post(view->sessionId(), boost::bind(&ComputerView::consoleDataAdded, computer.get(), logs));
 
 		view->addComputer(computerName, computer);
 	}
+	computerStateLock.unlock();
 }
 
 bool AbstractRPM::deleteView(View* view)
 {
-	/* todo*/
+	bool ret = false;
+
+	viewsLock.lock();
 	std::vector< View* >::iterator it;
 	for (it = views.begin(); it != views.end(); ++it) {
 		if (*it == view) {
 			views.erase(it);
-			return true;
+			ret = true;
 		}
 	}
+	viewsLock.unlock();
 
-	return false;
+	return ret;
 }

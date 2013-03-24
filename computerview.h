@@ -25,7 +25,6 @@ private:
 	Wt::WText *_ping_txt;
 	Wt::WTextArea *_logs_edit;
 
-
 	void btn_atx_force_off_clicked();
 	void btn_atx_force_on_clicked();
 	void btn_atx_reset_clicked();

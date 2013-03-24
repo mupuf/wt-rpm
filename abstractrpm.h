@@ -16,10 +16,11 @@ private:
 	boost::mutex computerStateLock;
 	std::map< Wt::WString, bool > _powerLedState;
 	std::map< Wt::WString, Wt::WString > _computerLogs;
-
 	std::set<Wt::WString> _computers;
 
 	std::shared_ptr<Wt::WServer> server;
+
+	boost::mutex viewsLock;
 	std::vector< View* > views;
 
 protected:
