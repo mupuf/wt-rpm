@@ -47,7 +47,7 @@ Wt::WFileResource *ComputerView::getImg(const Wt::WString &name)
 	if (ext_found != std::string::npos)
 		mime = "image/" + name.toUTF8().substr(ext_found + 1);
 
-	std::cerr << "path = " << path << ", " << "extension = '" << mime << '"' << std::endl;
+	std::cerr << "path = " << path << std::endl;
 
 	return new Wt::WFileResource(mime, path);
 }
@@ -58,7 +58,7 @@ ComputerView::ComputerView(Wt::WApplication *app, const Wt::WString &computerNam
 {
 	Wt::WBoxLayout *layout = new Wt::WBoxLayout(Wt::WBoxLayout::TopToBottom, this);
 
-	_title = new Wt::WText(computerName);
+	Wt::WText *_title = new Wt::WText(computerName);
 	_title->setStyleClass("ComputerName");
 	app->styleSheet().addRule(".ComputerName", "font-size: 36px; text-transform: capitalize;");
 	layout->addWidget(_title, 0, Wt::AlignCenter);
@@ -82,16 +82,21 @@ ComputerView::ComputerView(Wt::WApplication *app, const Wt::WString &computerNam
 	grid->addWidget(new Wt::WText("Power Led state"), 0, 1);
 	grid->addWidget(new Wt::WLabel(""), 0, 5);
 
-	grid->addWidget(new Wt::WImage(getImg("atx_power.png")), 1, 0, Wt::AlignCenter);
-	grid->addWidget(new Wt::WText("ATX power"), 1, 1);
-	grid->addWidget(_btn_atx_force_off, 1, 2);
-	grid->addWidget(_btn_atx_force_on, 1, 3);
-	grid->addWidget(_btn_atx_reset, 1, 4);
+	grid->addWidget(new Wt::WImage(getImg("ping.png")), 1, 0, Wt::AlignCenter);
+	grid->addWidget(new Wt::WText("Ping"), 1, 1);
+	_ping_txt = new Wt::WText("N/A");
+	grid->addWidget(_ping_txt, 1, 2, 0, 0, Wt::AlignCenter);
 
-	grid->addWidget(new Wt::WImage(getImg("power-button.png")), 2, 0, Wt::AlignCenter);
-	grid->addWidget(new Wt::WText("Power switch"), 2, 1);
-	grid->addWidget(_btn_pw_switch_press, 2, 2);
-	grid->addWidget(_btn_pw_switch_force_off, 2, 3);
+	grid->addWidget(new Wt::WImage(getImg("atx_power.png")), 2, 0, Wt::AlignCenter);
+	grid->addWidget(new Wt::WText("ATX power"), 2, 1);
+	grid->addWidget(_btn_atx_force_off, 2, 2);
+	grid->addWidget(_btn_atx_force_on, 2, 3);
+	grid->addWidget(_btn_atx_reset, 2, 4);
+
+	grid->addWidget(new Wt::WImage(getImg("power-button.png")), 3, 0, Wt::AlignCenter);
+	grid->addWidget(new Wt::WText("Power switch"), 3, 1);
+	grid->addWidget(_btn_pw_switch_press, 3, 2);
+	grid->addWidget(_btn_pw_switch_force_off, 3, 3);
 
 	grid->setColumnStretch(5, 1);
 
@@ -131,5 +136,18 @@ void ComputerView::powerLedStatusChanged(bool status)
 void ComputerView::consoleDataAdded(const Wt::WString &data)
 {
 	_logs_edit->setValueText(data + _logs_edit->valueText());
+	app->triggerUpdate();
+}
+
+void ComputerView::setPingDelay(double delay)
+{
+	Wt::WString text;
+
+	if (delay < 0)
+		text = "Timeout";
+	else
+		text = Wt::WString("{1} ms").arg(floatToString(delay, 2));
+
+	_ping_txt->setText(text);
 	app->triggerUpdate();
 }

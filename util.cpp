@@ -2,6 +2,8 @@
 
 #include <limits.h>
 #include <unistd.h>
+#include <sstream>
+#include <string>
 
 /* from http://stackoverflow.com/questions/4643512/replace-substring-with-another-substring-c */
 std::string &strReplace(std::string & subj, const std::string &old, const std::string &neu)
@@ -64,4 +66,12 @@ std::string getValueFromEnv(const Wt::WEnvironment& env,
 		return param[0];
 	} else
 		return defaultValue;
+}
+
+std::string floatToString(double value, int precision)
+{
+	std::stringstream ss;
+	ss.precision(precision);
+	ss << value;
+	return ss.str();
 }

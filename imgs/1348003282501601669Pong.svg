@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   height="290.3414"
+   id="svg598"
+   inkscape:version="0.46"
+   sodipodi:docbase="/home/nisse/Desktop/projekt linux/bild/040430_clipart"
+   sodipodi:docname="pong_01.svg"
+   sodipodi:version="0.32"
+   version="1.0"
+   width="565.18188"
+   x="0.0000000"
+   y="0.0000000"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <metadata
+     id="metadata3">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>pong</dc:title>
+        <dc:description>the classic arcade game pong</dc:description>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li />
+            <rdf:li>game</rdf:li>
+            <rdf:li>entertainment</rdf:li>
+            <rdf:li>computer</rdf:li>
+            <rdf:li>recreation</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://www.openclipart.org">
+            <dc:title>Andreas Nilsson</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Andreas Nilsson</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Andreas Nilsson</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:date />
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://web.resource.org/cc/PublicDomain" />
+        <dc:language>en</dc:language>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://web.resource.org/cc/PublicDomain">
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/Reproduction" />
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/Distribution" />
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     bordercolor="#666666"
+     borderopacity="1.0"
+     id="base"
+     inkscape:cx="305.25953"
+     inkscape:cy="417.84947"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:window-height="719"
+     inkscape:window-width="768"
+     inkscape:window-x="128"
+     inkscape:window-y="74"
+     inkscape:zoom="0.43415836"
+     pagecolor="#ffffff"
+     showgrid="false"
+     inkscape:current-layer="svg598" />
+  <defs
+     id="defs600">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective27" />
+    <linearGradient
+       id="linearGradient684">
+      <stop
+         id="stop685"
+         offset="0.0000000"
+         style="stop-color:#ffffff;stop-opacity:0.0000000;" />
+      <stop
+         id="stop686"
+         offset="1.0000000"
+         style="stop-color:#000000;stop-opacity:0.20161299;" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient635">
+      <stop
+         id="stop636"
+         offset="0.0000000"
+         style="stop-color:#ffffff;stop-opacity:0.0000000;" />
+      <stop
+         id="stop637"
+         offset="1.0000000"
+         style="stop-color:#000000;stop-opacity:0.65322602;" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient631">
+      <stop
+         id="stop632"
+         offset="0.0000000"
+         style="stop-color:#ffffff;stop-opacity:0.0000000;" />
+      <stop
+         id="stop633"
+         offset="1.0000000"
+         style="stop-color:#000000;stop-opacity:0.29838699;" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient609">
+      <stop
+         id="stop610"
+         offset="0.0000000"
+         style="stop-color:#ffffff;stop-opacity:0.0000000;" />
+      <stop
+         id="stop611"
+         offset="1.0000000"
+         style="stop-color:#000000;stop-opacity:0.29838699;" />
+    </linearGradient>
+    <radialGradient
+       cx="0.35833332"
+       cy="0.3984375"
+       fx="0.38333336"
+       fy="0.4140625"
+       id="radialGradient612"
+       r="0.62066555"
+       xlink:href="#linearGradient609" />
+    <linearGradient
+       id="linearGradient626"
+       x1="0.44999999"
+       x2="0.44"
+       xlink:href="#linearGradient684"
+       y1="0.03125"
+       y2="0.9765625" />
+    <linearGradient
+       id="linearGradient629"
+       xlink:href="#linearGradient609"
+       gradientTransform="scale(2.059126,0.4856429)"
+       x1="15.458189"
+       y1="-123.03928"
+       x2="120.26025"
+       y2="-123.03928"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <g
+     id="g638"
+     style="font-size:12px"
+     transform="translate(42.848873,191.6908)">
+    <rect
+       height="203.58549"
+       id="rect621"
+       rx="5.0896378"
+       style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+       width="50.896374"
+       x="-42.223873"
+       y="-191.0658" />
+    <rect
+       height="203.58549"
+       id="rect622"
+       rx="5.0896378"
+       style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+       width="50.896374"
+       x="470.81161"
+       y="-105.55988" />
+    <rect
+       height="50.896374"
+       id="rect623"
+       rx="5.0896378"
+       style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+       width="50.896374"
+       x="244.83168"
+       y="-85.201332" />
+    <rect
+       height="50.896381"
+       id="rect628"
+       style="fill:url(#linearGradient629);fill-opacity:1;fill-rule:evenodd;stroke-width:1pt;stroke-opacity:0.5"
+       width="215.80064"
+       x="31.830359"
+       y="-85.201347" />
+  </g>
+</svg>

@@ -25,6 +25,7 @@ private:
 protected:
 	void setPowerLedState(const Wt::WString &computerName, bool state);
 	void consoleAddData(const Wt::WString &computerName, const Wt::WString &data);
+	void setPingDelay(const Wt::WString &computerName, double delay);
 
 	bool addComputer(const Wt::WString &computerName);
 

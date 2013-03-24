@@ -2,7 +2,6 @@
 #define UTIL_H
 	#include <string>
 	#include <iostream>
-
 	#include <Wt/WEnvironment>
 
 	#define UNUSED(expr) do { (void)(expr); } while (0)
@@ -11,4 +10,5 @@
 	unsigned int countOccurencies(const std::string &str, const std::string &substr);
 	std::string getExeDirectory();
 	std::string getValueFromEnv(const Wt::WEnvironment& env, const std::string &key, const std::string &defaultValue);
+	std::string floatToString(double value, int precision);
 #endif // UTIL_H

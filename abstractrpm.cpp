@@ -50,6 +50,15 @@ void AbstractRPM::consoleAddData(const Wt::WString &computerName, const Wt::WStr
 	}
 }
 
+void AbstractRPM::setPingDelay(const Wt::WString &computerName, double delay)
+{
+	for (size_t i = 0; i < views.size(); i++) {
+		View *view = views[i];
+		ComputerView *cview = view->getComputer(computerName).get();
+		server->post(view->sessionId(), boost::bind(&ComputerView::setPingDelay, cview, delay));
+	}
+}
+
 bool AbstractRPM::addComputer(const Wt::WString &computerName)
 {
 	if (_computers.find(computerName) != _computers.end())

@@ -8,17 +8,27 @@
 #include <boost/bind.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
+#ifdef USE_PING
+	#include "oping.h"
+#endif
+
 #include <Wt/Json/Array>
 #include "confparser.h"
+
+#define PING_MISSING -1000.0
+#define PING_TIMEOUT -1.0
 
 RaspRPM *thiss;
 
 void RaspRPM::pollInputs(int signal)
 {
+	alarm(1);
+
 	int random = (rand() % 2);
 	std::cerr << "Poll: random = " << random << std::endl;
 	thiss->setPowerLedState("cathaou", random);
-	alarm(1);
+
+	thiss->pollPings();
 }
 
 bool RaspRPM::parseConfiguration(Wt::Json::Object &conf)
@@ -53,6 +63,8 @@ bool RaspRPM::parseComputer(Wt::Json::Object &computer)
 	Wt::Json::Object atxSwitch = readJSONValue<Wt::Json::Object>(computer, "atx_switch_gpio");
 	c.atxSwitch = parseGpio(atxSwitch);
 
+	c.ping = PING_MISSING;
+
 	if (c.name == Wt::WString())
 		return false;
 
@@ -72,6 +84,47 @@ RaspRPM::Gpio RaspRPM::parseGpio(Wt::Json::Object &gpio)
 		return RaspRPM::Gpio();
 	else
 		return g;
+}
+
+void RaspRPM::pollPings()
+{
+#ifdef USE_PING
+	pingobj_t *pingContext = ping_construct();
+
+	std::map<Wt::WString, Wt::WString> ipToComputer;
+
+	double timeout = 0.1;
+	if (ping_setopt(pingContext, PING_OPT_TIMEOUT, (void *)&timeout))
+		std::cerr << "ping_setopt failed: " << ping_get_error(pingContext) << std::endl;
+
+	for (size_t i = 0; i < _computers.size(); i++) {
+		if (_computers[i].ipAddress != Wt::WString()) {
+			if (ping_host_add(pingContext, _computers[i].ipAddress.toUTF8().c_str()))
+				std::cerr << "ping_host_add failed: " << ping_get_error(pingContext) << std::endl;
+			ipToComputer[_computers[i].ipAddress] = _computers[i].name;
+		}
+	}
+
+	if (ping_send(pingContext) < 0)
+		std::cerr << "ping_send failed: " << ping_get_error(pingContext) << std::endl;
+
+	pingobj_iter_t *iter;
+	for (iter = ping_iterator_get(pingContext); iter != NULL; iter = ping_iterator_next(iter)) {
+		double ping;
+		size_t size = sizeof(double);
+		if (ping_iterator_get_info(iter, PING_INFO_LATENCY, (void*)&ping, &size))
+			std::cerr << "ping_iterator_get_info/latency failed" << std::endl;
+
+		char hostname[101];
+		size_t hostname_len = sizeof(hostname);
+		if (ping_iterator_get_info(iter, PING_INFO_USERNAME, (void*)hostname, &hostname_len))
+			std::cerr << "ping_iterator_get_info/hostname failed" << std::endl;
+
+		setPingDelay(ipToComputer[hostname], ping);
+	}
+
+	ping_destroy(pingContext);
+#endif
 }
 
 RaspRPM::RaspRPM(std::shared_ptr<Wt::WServer> server, Wt::Json::Object conf) : AbstractRPM(server)

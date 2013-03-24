@@ -14,7 +14,6 @@ private:
 	bool _powerStatus;
 	bool _atxStatus;
 
-	Wt::WText *_title;
 	Wt::WPushButton *_btn_atx_force_off;
 	Wt::WPushButton *_btn_atx_force_on;
 	Wt::WPushButton *_btn_atx_reset;
@@ -23,7 +22,9 @@ private:
 	Wt::WPushButton *_btn_pw_switch_force_off;
 
 	Wt::WImage *_img_led;
+	Wt::WText *_ping_txt;
 	Wt::WTextArea *_logs_edit;
+
 
 	void btn_atx_force_off_clicked();
 	void btn_atx_force_on_clicked();
@@ -40,6 +41,7 @@ public:
 	/* slots */
 	void powerLedStatusChanged(bool status);
 	void consoleDataAdded(const Wt::WString &data);
+	void setPingDelay(double delay);
 
 	/* signals */
 	boost::signal<void ()> sig_atxForceOff;
