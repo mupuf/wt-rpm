@@ -62,8 +62,8 @@ endif (USE_CON_HTTP)
 
 # Output binary
 file(GLOB wtcomments_SOURCES "*.cpp" "*.h")
-add_executable(ipmi_web ${wtcomments_SOURCES})
-target_link_libraries(ipmi_web ${Wt_LIBRARY} ${Wt_CONNECTOR} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${LIBCURL_LDFLAGS})
+add_executable(wt_rpm ${wtcomments_SOURCES})
+target_link_libraries(wt_rpm ${Wt_LIBRARY} ${Wt_CONNECTOR} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${LIBCURL_LDFLAGS})
 
 message("")
 message ("-- Summary --")
