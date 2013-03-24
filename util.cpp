@@ -33,16 +33,26 @@ unsigned int countOccurencies(const std::string &str, const std::string &substr)
 /* WARNING: This function is not portable! Linux ONLY! */
 std::string getExeDirectory()
 {
+	static std::string exeDir;
+
+	if (exeDir != std::string())
+		return exeDir;
+
 	char path[PATH_MAX];
-	size_t len = readlink("/proc/self/exe", path, PATH_MAX);
+	ssize_t len = readlink("/proc/self/exe", path, PATH_MAX);
 	path[len] = '\0';
+
+	if (len < 0)
+		perror("readlink failed");
 
 	std::string dbPath(path);
 	std::size_t dir = dbPath.find_last_of('/');
 	if (dir != std::string::npos)
-		return dbPath.substr(0, dir);
+		exeDir = dbPath.substr(0, dir);
 	else
-		return std::string();
+		exeDir = std::string();
+
+	return exeDir;
 }
 
 std::string getValueFromEnv(const Wt::WEnvironment& env,
