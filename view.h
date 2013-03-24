@@ -22,7 +22,6 @@ private:
 
 public:
 	View(const Wt::WEnvironment &env, std::shared_ptr<Wt::WServer> server, std::shared_ptr<AbstractRPM> rpm);
-	~View();
 
 	void addComputer(const Wt::WString &computerName, std::shared_ptr<ComputerView> view);
 	std::shared_ptr<ComputerView> getComputer(const Wt::WString &computerName);

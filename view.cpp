@@ -56,11 +56,6 @@ View::View(const Wt::WEnvironment& env, std::shared_ptr<Wt::WServer> /*server*/,
 	w->setLayout(verticalLayout);
 }
 
-View::~View()
-{
-	rpm->deleteView(this);
-}
-
 void View::addComputer(const Wt::WString &computerName, std::shared_ptr<ComputerView> view)
 {
 	_computers[computerName] = view;
