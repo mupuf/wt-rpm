@@ -70,3 +70,21 @@ std::shared_ptr<ComputerView> View::getComputer(const Wt::WString &computerName)
 	return _computers[computerName];
 }
 
+void View::powerLedStatusChanged(const Wt::WString &computerName, bool status)
+{
+	std::shared_ptr<ComputerView> cview = getComputer(computerName);
+	cview->powerLedStatusChanged(status);
+}
+
+void View::consoleDataAdded(const Wt::WString &computerName, const Wt::WString &data)
+{
+	std::shared_ptr<ComputerView> cview = getComputer(computerName);
+	cview->consoleDataAdded(data);
+}
+
+void View::setPingDelay(const Wt::WString &computerName, double delay)
+{
+	std::shared_ptr<ComputerView> cview = getComputer(computerName);
+	cview->setPingDelay(delay);
+}
+

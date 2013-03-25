@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <sstream>
 #include <string>
+#include <execinfo.h>
 
 /* from http://stackoverflow.com/questions/4643512/replace-substring-with-another-substring-c */
 std::string &strReplace(std::string & subj, const std::string &old, const std::string &neu)
@@ -74,4 +75,17 @@ std::string floatToString(double value, int precision)
 	ss.precision(precision);
 	ss << value;
 	return ss.str();
+}
+
+void segv_handler(int sig) {
+	void *array[1000];
+	size_t size;
+
+	// get void*'s for all entries on the stack
+	size = backtrace(array, 1000);
+
+	// print out all the frames to stderr
+	fprintf(stderr, "Error: signal %d:\n", sig);
+	backtrace_symbols_fd(array, size, 2);
+	exit(1);
 }

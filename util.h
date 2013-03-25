@@ -11,4 +11,5 @@
 	std::string getExeDirectory();
 	std::string getValueFromEnv(const Wt::WEnvironment& env, const std::string &key, const std::string &defaultValue);
 	std::string floatToString(double value, int precision);
+	void segv_handler(int sig);
 #endif // UTIL_H

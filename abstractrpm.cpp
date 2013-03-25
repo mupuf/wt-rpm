@@ -23,10 +23,11 @@ void AbstractRPM::setPowerLedState(const Wt::WString &computerName, bool state)
 		return;
 
 	viewsLock.lock();
-	for (size_t i = 0; i < views.size(); i++) {
-		View *view = views[i];
-		ComputerView *cview = view->getComputer(computerName).get();
-		server->post(view->sessionId(), boost::bind(&ComputerView::powerLedStatusChanged, cview, state));
+	std::map< std::string, View* >::iterator it;
+	for (it = views.begin(); it != views.end(); ++it) {
+		server->post((*it).first, boost::bind(&View::powerLedStatusChanged,
+						      (*it).second, computerName,
+						      state));
 	}
 	viewsLock.unlock();
 
@@ -46,10 +47,11 @@ void AbstractRPM::consoleAddData(const Wt::WString &computerName, const Wt::WStr
 	computerStateLock.unlock();
 
 	viewsLock.lock();
-	for (size_t i = 0; i < views.size(); i++) {
-		View *view = views[i];
-		ComputerView *cview = view->getComputer(computerName).get();
-		server->post(view->sessionId(), boost::bind(&ComputerView::consoleDataAdded, cview, entry));
+	std::map< std::string, View* >::iterator it;
+	for (it = views.begin(); it != views.end(); ++it) {
+		server->post((*it).first, boost::bind(&View::consoleDataAdded,
+						      (*it).second, computerName,
+						      entry));
 	}
 	viewsLock.unlock();
 }
@@ -57,10 +59,11 @@ void AbstractRPM::consoleAddData(const Wt::WString &computerName, const Wt::WStr
 void AbstractRPM::setPingDelay(const Wt::WString &computerName, double delay)
 {
 	viewsLock.lock();
-	for (size_t i = 0; i < views.size(); i++) {
-		View *view = views[i];
-		ComputerView *cview = view->getComputer(computerName).get();
-		server->post(view->sessionId(), boost::bind(&ComputerView::setPingDelay, cview, delay));
+	std::map< std::string, View* >::iterator it;
+	for (it = views.begin(); it != views.end(); ++it) {
+		server->post((*it).first, boost::bind(&View::setPingDelay,
+						      (*it).second, computerName,
+						      delay));
 	}
 	viewsLock.unlock();
 }
@@ -81,9 +84,17 @@ bool AbstractRPM::addComputer(const Wt::WString &computerName)
 
 void AbstractRPM::addView(View *view)
 {
+	bool alreadyExists = false;
+
 	viewsLock.lock();
-	views.push_back(view);
+	if (views.find(view->sessionId()) == views.end())
+		views[view->sessionId()] = view;
+	else
+		alreadyExists = true;
 	viewsLock.unlock();
+
+	if (alreadyExists)
+		return;
 
 	computerStateLock.lock();
 	std::set<Wt::WString>::iterator it;
@@ -108,14 +119,14 @@ void AbstractRPM::addView(View *view)
 	computerStateLock.unlock();
 }
 
-bool AbstractRPM::deleteView(View* view)
+bool AbstractRPM::deleteView(std::string sessionId)
 {
 	bool ret = false;
 
 	viewsLock.lock();
-	std::vector< View* >::iterator it;
+	std::map< std::string, View* >::iterator it;
 	for (it = views.begin(); it != views.end(); ++it) {
-		if (*it == view) {
+		if ((*it).first == sessionId) {
 			views.erase(it);
 			ret = true;
 		}

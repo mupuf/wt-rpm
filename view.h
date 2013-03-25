@@ -20,11 +20,16 @@ private:
 
 	std::map< Wt::WString, std::shared_ptr<ComputerView> > _computers;
 
+	std::shared_ptr<ComputerView> getComputer(const Wt::WString &computerName);
 public:
 	View(const Wt::WEnvironment &env, std::shared_ptr<Wt::WServer> server, std::shared_ptr<AbstractRPM> rpm);
 
 	void addComputer(const Wt::WString &computerName, std::shared_ptr<ComputerView> view);
-	std::shared_ptr<ComputerView> getComputer(const Wt::WString &computerName);
+
+	/* slots */
+	void powerLedStatusChanged(const Wt::WString &computerName, bool status);
+	void consoleDataAdded(const Wt::WString &computerName, const Wt::WString &data);
+	void setPingDelay(const Wt::WString &computerName, double delay);
 };
 
 #endif // VIEW_H

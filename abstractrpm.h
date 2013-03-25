@@ -21,7 +21,7 @@ private:
 	std::shared_ptr<Wt::WServer> server;
 
 	boost::mutex viewsLock;
-	std::vector< View* > views;
+	std::map< std::string, View* > views;
 
 protected:
 	void setPowerLedState(const Wt::WString &computerName, bool state);
@@ -34,7 +34,7 @@ public:
 	AbstractRPM(std::shared_ptr<Wt::WServer> server);
 
 	void addView(View* view);
-	bool deleteView(View* view);
+	bool deleteView(std::string sessionId);
 
 	/* input events */
 	virtual void atx_force_off(const Wt::WString &computerName) = 0;

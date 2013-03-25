@@ -37,6 +37,8 @@ Wt::WApplication *createApplication(const Wt::WEnvironment& env,
 
 int main(int argc, char **argv)
 {
+	signal(SIGSEGV, segv_handler);
+
 	try {
 		std::shared_ptr<Wt::WServer> server(new Wt::WServer(argv[0]));
 
