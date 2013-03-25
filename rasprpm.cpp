@@ -87,7 +87,7 @@ void RaspRPM::pollInputs()
 		std::cerr << "Poll: random = " << random << std::endl;
 		setPowerLedState("cathaou", random);
 
-		usleep(100000);
+		usleep(1000000);
 	}
 }
 

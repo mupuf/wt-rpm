@@ -43,7 +43,9 @@ void AbstractRPM::consoleAddData(const Wt::WString &computerName, const Wt::WStr
 	Wt::WString entry = date + "-" + time + ": " + data + "\n";
 
 	computerStateLock.lock();
-	_computerLogs[computerName] = entry + _computerLogs[computerName];
+	Wt::WString logs = entry + _computerLogs[computerName];
+	logs = logs.toUTF8().substr(0, 1000);	/* limit to 1k */
+	_computerLogs[computerName] = logs;
 	computerStateLock.unlock();
 
 	viewsLock.lock();

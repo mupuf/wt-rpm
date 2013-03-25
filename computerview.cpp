@@ -50,13 +50,10 @@ Wt::WFileResource *ComputerView::getImg(const Wt::WString &name)
 	return new Wt::WFileResource(mime, path);
 }
 
-#include <signal.h>
 ComputerView::ComputerView(Wt::WApplication *app, const Wt::WString &computerName, Wt::WContainerWidget *parent) :
 	Wt::WContainerWidget(parent),
 	app(app), _computerName(computerName), _img_led(NULL)
 {
-	signal(SIGSEGV, segv_handler);
-
 	Wt::WBoxLayout *layout = new Wt::WBoxLayout(Wt::WBoxLayout::TopToBottom, this);
 
 	Wt::WText *_title = new Wt::WText(computerName);
@@ -136,7 +133,11 @@ void ComputerView::powerLedStatusChanged(bool status)
 
 void ComputerView::consoleDataAdded(const Wt::WString &data)
 {
-	_logs_edit->setValueText(data + _logs_edit->valueText());
+
+	Wt::WString logs = data + _logs_edit->valueText();
+	logs = logs.toUTF8().substr(0, 1000);	/* limit to 1k */
+	_logs_edit->setValueText(logs);
+
 	app->triggerUpdate();
 }
 
