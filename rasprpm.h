@@ -3,6 +3,8 @@
 
 #include "abstractrpm.h"
 
+#include <boost/thread.hpp>
+#include <boost/thread/mutex.hpp>
 #include <vector>
 
 class RaspRPM : public AbstractRPM
@@ -26,16 +28,21 @@ class RaspRPM : public AbstractRPM
 
 	std::vector<Computer> _computers;
 
-	static void pollInputs(int signal);
-
 	bool parseConfiguration(Wt::Json::Object &conf);
 	bool parseComputer(Wt::Json::Object &computer);
 	Gpio parseGpio(Wt::Json::Object &gpio);
 
+	boost::thread gpioPollingThread;
+	boost::thread pingPollingThread;
+	boost::mutex pollingThreadsExitLock;
+	bool shouldExit;
+
+	void pollInputs();
 	void pollPings();
 
 public:
 	RaspRPM(std::shared_ptr<Wt::WServer> server, Wt::Json::Object conf);
+	~RaspRPM();
 
 	void atx_force_off(const Wt::WString &computerName);
 	void atx_force_on(const Wt::WString &computerName);

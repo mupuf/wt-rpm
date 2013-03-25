@@ -49,7 +49,6 @@ void AbstractRPM::consoleAddData(const Wt::WString &computerName, const Wt::WStr
 	for (size_t i = 0; i < views.size(); i++) {
 		View *view = views[i];
 		ComputerView *cview = view->getComputer(computerName).get();
-		std::cerr << "view[" << i << "/" << views.size() << "] (" << view << ") " << computerName << std::endl;
 		server->post(view->sessionId(), boost::bind(&ComputerView::consoleDataAdded, cview, entry));
 	}
 	viewsLock.unlock();

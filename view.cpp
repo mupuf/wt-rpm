@@ -45,7 +45,6 @@ View::View(const Wt::WEnvironment& env, std::shared_ptr<Wt::WServer> /*server*/,
 	verticalLayout->addSpacing(50);
 
 	_horizontalLayout = new Wt::WBoxLayout(Wt::WBoxLayout::LeftToRight);
-	//_horizontalLayout->addStretch(1);
 	verticalLayout->addLayout(_horizontalLayout, 0, Wt::AlignCenter);
 
 	verticalLayout->addSpacing(50);
