@@ -25,6 +25,12 @@ private:
 	Wt::WText *_ping_txt;
 	Wt::WTextArea *_logs_edit;
 
+	std::shared_ptr<Wt::WFileResource> _ico_led_on_file;
+	std::shared_ptr<Wt::WFileResource> _ico_led_off_file;
+	std::shared_ptr<Wt::WFileResource> _ico_ping_file;
+	std::shared_ptr<Wt::WFileResource> _ico_atx_pwr_file;
+	std::shared_ptr<Wt::WFileResource> _ico_pwr_switch_file;
+
 	void btn_atx_force_off_clicked();
 	void btn_atx_force_on_clicked();
 	void btn_atx_reset_clicked();
@@ -32,6 +38,7 @@ private:
 	void btn_pw_switch_force_off_clicked();
 
 	Wt::WFileResource *getImg(const Wt::WString &name);
+	void setPowerLedStatus(bool status);
 public:
 	ComputerView(Wt::WApplication *app, const Wt::WString &computerName, Wt::WContainerWidget *parent = NULL);
 

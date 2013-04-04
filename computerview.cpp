@@ -50,6 +50,14 @@ Wt::WFileResource *ComputerView::getImg(const Wt::WString &name)
 	return new Wt::WFileResource(mime, path);
 }
 
+void ComputerView::setPowerLedStatus(bool status)
+{
+	if (status)
+		_img_led->setImageLink(_ico_led_on_file.get());
+	else
+		_img_led->setImageLink(_ico_led_off_file.get());
+}
+
 ComputerView::ComputerView(Wt::WApplication *app, const Wt::WString &computerName, Wt::WContainerWidget *parent) :
 	Wt::WContainerWidget(parent),
 	app(app), _computerName(computerName), _img_led(NULL)
@@ -74,24 +82,35 @@ ComputerView::ComputerView(Wt::WApplication *app, const Wt::WString &computerNam
 	_btn_pw_switch_press->clicked().connect(this, &ComputerView::btn_pw_switch_press_clicked);
 	_btn_pw_switch_force_off->clicked().connect(this, &ComputerView::btn_pw_switch_force_off_clicked);
 
+	/* preload all the images */
+	_ico_led_on_file.reset(getImg("green_light.png"));
+	_ico_led_off_file.reset(getImg("off_light.png"));
+	_ico_ping_file.reset(getImg("ping.png"));
+	_ico_atx_pwr_file.reset(getImg("atx_power.png"));
+	_ico_pwr_switch_file.reset(getImg("power-button.png"));
+
+	/* create the LED */
+	_img_led = new Wt::WImage();
+	_img_led->setHeight(Wt::WLength(16));
+	setPowerLedStatus(false);
+
 	Wt::WGridLayout *grid = new Wt::WGridLayout();
-	powerLedStatusChanged(false);
 	grid->addWidget(_img_led, 0, 0, Wt::AlignCenter);
 	grid->addWidget(new Wt::WText("Power Led state"), 0, 1);
 	grid->addWidget(new Wt::WLabel(""), 0, 5);
 
-	grid->addWidget(new Wt::WImage(getImg("ping.png")), 1, 0, Wt::AlignCenter);
+	grid->addWidget(new Wt::WImage(_ico_ping_file.get()), 1, 0, Wt::AlignCenter);
 	grid->addWidget(new Wt::WText("Ping"), 1, 1);
 	_ping_txt = new Wt::WText("N/A");
 	grid->addWidget(_ping_txt, 1, 2, 0, 0, Wt::AlignCenter);
 
-	grid->addWidget(new Wt::WImage(getImg("atx_power.png")), 2, 0, Wt::AlignCenter);
+	grid->addWidget(new Wt::WImage(_ico_atx_pwr_file.get()), 2, 0, Wt::AlignCenter);
 	grid->addWidget(new Wt::WText("ATX power"), 2, 1);
 	grid->addWidget(_btn_atx_force_off, 2, 2);
 	grid->addWidget(_btn_atx_force_on, 2, 3);
 	grid->addWidget(_btn_atx_reset, 2, 4);
 
-	grid->addWidget(new Wt::WImage(getImg("power-button.png")), 3, 0, Wt::AlignCenter);
+	grid->addWidget(new Wt::WImage(_ico_pwr_switch_file.get()), 3, 0, Wt::AlignCenter);
 	grid->addWidget(new Wt::WText("Power switch"), 3, 1);
 	grid->addWidget(_btn_pw_switch_press, 3, 2);
 	grid->addWidget(_btn_pw_switch_force_off, 3, 3);
@@ -116,24 +135,12 @@ ComputerView::ComputerView(Wt::WApplication *app, const Wt::WString &computerNam
 
 void ComputerView::powerLedStatusChanged(bool status)
 {
-	Wt::WString file = "green_light.png";
-
-	if (!status)
-		file = "off_light.png";
-
-	if (_img_led == NULL) {
-		_img_led = new Wt::WImage(getImg(file));
-		_img_led->setHeight(Wt::WLength(16));
-	}
-	else {
-		_img_led->setImageLink(getImg(file));
-		app->triggerUpdate();
-	}
+	setPowerLedStatus(status);
+	app->triggerUpdate();
 }
 
 void ComputerView::consoleDataAdded(const Wt::WString &data)
 {
-
 	Wt::WString logs = data + _logs_edit->valueText();
 	logs = logs.toUTF8().substr(0, 1000);	/* limit to 1k */
 	_logs_edit->setValueText(logs);
