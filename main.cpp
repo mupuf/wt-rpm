@@ -16,14 +16,17 @@ bool createRPM(std::shared_ptr<Wt::WServer> server)
 {
 	ConfParser parser;
 	Wt::WString backend = parser.rpmBackend();
-	if (backend == "rasprpm")
-		rpm.reset(new RaspRPM(server, parser.rpmBackendConfiguration()));
-	else {
-		std::cerr << "Cannot allocate an RPM '" << backend.toUTF8() << std::endl;
-		return false;
-	}
 
-	return true;
+#ifdef USE_RASPRPM
+	if (backend == "rasprpm") {
+		rpm.reset(new RaspRPM(server, parser.rpmBackendConfiguration()));
+		return true;
+	}
+#endif
+
+	std::cerr << "Cannot allocate the RPM backend '" << backend.toUTF8() << "'" << std::endl;
+	return false;
+
 }
 
 Wt::WApplication *createApplication(const Wt::WEnvironment& env,

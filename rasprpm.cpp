@@ -1,3 +1,5 @@
+#ifdef USE_RASPRPM
+
 #include "rasprpm.h"
 
 #include <signal.h>
@@ -12,11 +14,22 @@
 	#include "oping.h"
 #endif
 
+#include <wiringPi.h>
 #include <Wt/Json/Array>
 #include "confparser.h"
 
 #define PING_MISSING -1000.0
 #define PING_TIMEOUT -1.0
+
+const RaspRPM::Computer *RaspRPM::findComputer(const Wt::WString &computerName)
+{
+	for (size_t i = 0; i < _computers.size(); i++) {
+		if (_computers.at(i).name == computerName)
+			return &_computers.at(i);
+	}
+
+	return NULL;
+}
 
 bool RaspRPM::parseConfiguration(Wt::Json::Object &conf)
 {
@@ -73,6 +86,77 @@ RaspRPM::Gpio RaspRPM::parseGpio(Wt::Json::Object &gpio)
 		return g;
 }
 
+bool RaspRPM::gpioIsValid(const struct Gpio &gpio)
+{
+	return gpio.pin >= 0 && gpio.pin <= 20;
+}
+
+bool RaspRPM::readGPIO(const struct Gpio &gpio)
+{
+	int value = digitalRead(gpio.pin);
+
+	if (gpio.inverted)
+	{
+		if (value == HIGH)
+			value = LOW;
+		else
+			value = HIGH;
+	}
+
+	return value == HIGH;
+}
+
+void RaspRPM::writeGPIO(const struct Gpio &gpio, int value)
+{
+	if (!gpioIsValid(gpio)) {
+		fprintf(stderr, "writeGPIO: Invalid write to GPIO %i\n", gpio.pin);
+		return;
+	}
+
+	if (gpio.inverted)
+	{
+		if (value == HIGH)
+			value = LOW;
+		else
+			value = HIGH;
+	}
+
+	digitalWrite(gpio.pin, value);
+}
+
+void RaspRPM::setupGPIO(const char *tag, int mode, const struct Gpio &gpio)
+{
+	fprintf(stderr,
+		"Configure '%s' GPIO: direction = %s, pin = %i, inverted = %s\n",
+		tag, mode == INPUT?"input":"output", gpio.pin, gpio.inverted?"true":"false");
+
+	if (!gpioIsValid(gpio))
+		return;
+
+	pinMode(gpio.pin, mode);
+
+	if (mode == OUTPUT)
+		writeGPIO(gpio, LOW);
+}
+
+void RaspRPM::prepareGPIOs()
+{
+	if (wiringPiSetup() == -1)
+	{
+		perror("wiringPiSetup");
+		exit(1);
+	}
+
+	for (size_t i = 0; i < _computers.size(); i++)
+	{
+		fprintf(stderr, "Configure computer '%s':\n", _computers.at(i).name.toUTF8().c_str());
+		setupGPIO("power LED", INPUT, _computers.at(i).powerLed);
+		setupGPIO("power switch", OUTPUT, _computers.at(i).powerSwitch);
+		setupGPIO("ATX power", OUTPUT, _computers.at(i).atxSwitch);
+		fprintf(stderr, "\n");
+	}
+}
+
 void RaspRPM::pollInputs()
 {
 	while (1)
@@ -83,9 +167,13 @@ void RaspRPM::pollInputs()
 				return;
 		}
 
-		int random = (rand() % 2);
-		std::cerr << "Poll: random = " << random << std::endl;
-		setPowerLedState("cathaou", random);
+		for (size_t i = 0; i < _computers.size(); i++)
+		{
+			if (gpioIsValid(_computers[i].powerLed)) {
+				bool powerLedOn = readGPIO(_computers[i].powerLed);
+				setPowerLedState(_computers[i].name, powerLedOn);
+			}
+		}
 
 		usleep(1000000);
 	}
@@ -147,6 +235,7 @@ RaspRPM::RaspRPM(std::shared_ptr<Wt::WServer> server, Wt::Json::Object conf) :
 	AbstractRPM(server), shouldExit(false)
 {
 	parseConfiguration(conf);
+	prepareGPIOs();
 
 	for (size_t i = 0; i < _computers.size(); i++)
 		addComputer(_computers[i].name);
@@ -171,25 +260,72 @@ RaspRPM::~RaspRPM()
 
 void RaspRPM::atx_force_off(const Wt::WString &computerName)
 {
+	const RaspRPM::Computer *computer = findComputer(computerName);
+	if (!computer) {
+		consoleAddData(computerName, "Unknown computer '" + computerName + "'");
+		return;
+	}
+
+	writeGPIO(computer->atxSwitch, 1);
+
 	consoleAddData(computerName, "ATX force off");
 }
 
 void RaspRPM::atx_force_on(const Wt::WString &computerName)
 {
+	const RaspRPM::Computer *computer = findComputer(computerName);
+	if (!computer) {
+		consoleAddData(computerName, "Unknown computer '" + computerName + "'");
+		return;
+	}
+
+	writeGPIO(computer->atxSwitch, 0);
+
 	consoleAddData(computerName, "ATX force on");
 }
 
 void RaspRPM::atx_reset(const Wt::WString &computerName)
 {
+	const RaspRPM::Computer *computer = findComputer(computerName);
+	if (!computer) {
+		consoleAddData(computerName, "Unknown computer '" + computerName + "'");
+		return;
+	}
+
+	writeGPIO(computer->atxSwitch, 1);
+	sleep(3);
+	writeGPIO(computer->atxSwitch, 0);
+
 	consoleAddData(computerName, "ATX reset");
 }
 
 void RaspRPM::pw_switch_press(const Wt::WString &computerName)
 {
+	const RaspRPM::Computer *computer = findComputer(computerName);
+	if (!computer) {
+		consoleAddData(computerName, "Unknown computer '" + computerName + "'");
+		return;
+	}
+
+	writeGPIO(computer->powerSwitch, 1);
+	usleep(250000);
+	writeGPIO(computer->powerSwitch, 0);
+
 	consoleAddData(computerName, "Power switch pressed");
 }
 
 void RaspRPM::pw_switch_force_off(const Wt::WString &computerName)
 {
+	const RaspRPM::Computer *computer = findComputer(computerName);
+	if (!computer) {
+		consoleAddData(computerName, "Unknown computer '" + computerName + "'");
+		return;
+	}
+
+	writeGPIO(computer->powerSwitch, 1);
+	sleep(10);
+	writeGPIO(computer->powerSwitch, 0);
+
 	consoleAddData(computerName, "Power switch forced off");
 }
+#endif

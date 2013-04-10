@@ -33,6 +33,8 @@ ConfParser::ConfParser()
 		std::ifstream db(path);
 		if (db.is_open())
 		{
+			std::cerr << "Use configuration file '" + path + "'" << std::endl;
+
 			std::string line;
 			while (db.good()) {
 				getline(db, line);

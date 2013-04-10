@@ -1,6 +1,8 @@
 #ifndef RASPRPM_H
 #define RASPRPM_H
 
+#ifdef USE_RASPRPM
+
 #include "abstractrpm.h"
 
 #include <boost/thread.hpp>
@@ -27,6 +29,7 @@ class RaspRPM : public AbstractRPM
 	};
 
 	std::vector<Computer> _computers;
+	const Computer *findComputer(const Wt::WString &computerName);
 
 	bool parseConfiguration(Wt::Json::Object &conf);
 	bool parseComputer(Wt::Json::Object &computer);
@@ -36,6 +39,13 @@ class RaspRPM : public AbstractRPM
 	boost::thread pingPollingThread;
 	boost::mutex pollingThreadsExitLock;
 	bool shouldExit;
+
+	bool gpioIsValid(const struct Gpio &gpio);
+
+	bool readGPIO(const struct Gpio &gpio);
+	void writeGPIO(const struct Gpio &gpio, int value);
+	void setupGPIO(const char *tag, int mode, const struct Gpio &gpio);
+	void prepareGPIOs();
 
 	void pollInputs();
 	void pollPings();
@@ -50,5 +60,7 @@ public:
 	void pw_switch_press(const Wt::WString &computerName);
 	void pw_switch_force_off(const Wt::WString &computerName);
 };
+
+#endif
 
 #endif // RASPRPM_H
