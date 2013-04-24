@@ -80,10 +80,7 @@ RaspRPM::Gpio RaspRPM::parseGpio(Wt::Json::Object &gpio)
 	g.pin = readJSONValue<int>(gpio, "pin", -1);
 	g.inverted = readJSONValue<Wt::WString>(gpio, "inverted", "false") == "true";
 
-	if (g.pin == -1)
-		return RaspRPM::Gpio();
-	else
-		return g;
+	return g;
 }
 
 bool RaspRPM::gpioIsValid(const struct Gpio &gpio)
