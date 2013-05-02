@@ -83,6 +83,9 @@ file(GLOB wtcomments_SOURCES "*.cpp" "*.h")
 add_executable(wt_rpm ${wtcomments_SOURCES})
 target_link_libraries(wt_rpm ${Wt_LIBRARY} ${Wt_CONNECTOR} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${PING_LIBRARIES} ${RASPRPM_LIBRARIES})
 
+# install
+install(TARGETS wt_rpm DESTINATION bin)
+
 message("")
 message("-- Summary --")
 message("	Build type                               : ${CMAKE_BUILD_TYPE} (-DCMAKE_BUILD_TYPE)")
@@ -91,4 +94,7 @@ message("	Use pings (requires liboping)            : ${USE_PING} (-DUSE_PING)")
 message("")
 message("-- Backends --")
 message("	Raspberry Pi                             : ${USE_RASPRPM} (-DUSE_RASPRPM)")
+message("")
+message("-- Install --")
+message("	Install prefix                           : ${CMAKE_INSTALL_PREFIX} (-DCMAKE_INSTALL_PREFIX}")
 message("")

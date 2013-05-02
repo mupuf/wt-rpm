@@ -1,0 +1,25 @@
+# How to use systemd to launch wt_rpm
+
+## /var/run/wt
+
+To make sure /run/wt is created at boot (/run and /var/run on tmpfs),
+simply put the wtcomments.conf file in /etc/tmpfiles.d/
+
+## systemd service unit
+
+There are several systemd units that you can use according to how you compiled wt:
+
+* wtrpm.service: For wt applications compiled with the built-in http server
+
+In order to use systemd to launch wtrpm, copy the wanted service file
+to /etc/systemd/system/.
+
+Then reload systemd unit files with:
+# systemctl --system daemon-reload
+
+To start it, use:
+# systemctl start <wanted service>.service
+
+And to enable it for startup at boot:
+# systemctl enable <wanted service>.service
+

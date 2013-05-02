@@ -1,0 +1,16 @@
+[Unit]
+Description=Wt-RPM running the built-in http server
+After=syslog.target network.target remote-fs.target nss-lookup.target
+
+[Service]
+User=wtrpm
+Group=wtrpm
+Umask=007
+Type=simple
+Restart=on-abort
+PIDFile=/var/run/wt/wtrpm.pid
+ExecStart=/usr/bin/wt_rpm --docroot /usr/share/Wt/ --http-address 0.0.0.0 --http-port 9090
+ExecStop=/bin/kill -15 $MAINPID
+
+[Install]
+WantedBy=multi-user.target

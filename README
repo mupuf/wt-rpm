@@ -1,0 +1,104 @@
+# Wt-RPM
+
+## Compilation
+
+### Dependencies
+
+#### Ping support
+
+If you are interested in supporting ping, you will have to install liboping.
+
+#### Raspberry Pi backend
+
+To compile the Raspberry Pi backend, please make sure you have installed libwiringPi.
+
+### Compilation
+
+To compile the project, please execute the following steps:
+
+If you plan on using Wt's internal http server:
+
+	CONNECTOR="-DUSE_CON_HTTP=ON"
+
+otherwise
+
+	CONNECTOR="-DUSE_CON_HTTP=OFF"
+
+	mkdir build
+	cd build
+	cmake .. -DCMAKE_INSTALL_PREFIX=/usr $CONNECTOR
+
+Review the summary, fix as needed. Then do:
+
+	make
+	sudo make install
+
+## Configuration
+
+Wt_rpm's configuration must be stored in one of the following location:
+  - ./wt-rpm.json
+  - ../wt-rpm.json
+  - ~/.wt-rpm.json
+  - /etc/wt-rpm.json
+
+The file must follow the JSON format and must contain the backend attribute.
+At the moment, there is only one acceptable attribute, rasprpm.
+Here is a sample configuration file:
+
+{
+        "backend": "rasprpm",
+        "rasprpm": {
+                "computers": [
+                        {
+                                "name": "pc1",
+                                "ip_address": "192.168.0.42",
+
+                                "power_led_gpio": {
+                                        "pin": 6,
+                                        "inverted": "true"
+                                },
+
+                                "power_switch_gpio": {
+                                        "pin": 8,
+                                        "inverted": "false"
+                                },
+
+                                "atx_switch_gpio": {
+                                        "pin": 10,
+                                        "inverted": "false"
+                                }
+                        },
+
+                        {
+                                "name": "reator",
+                                "ip_address": "192.168.0.43",
+
+                                "power_led_gpio": {
+                                        "pin": 1,
+                                        "inverted": "true"
+                                },
+
+                                "power_switch_gpio": {
+                                        "pin": 0,
+                                        "inverted": "false"
+                                },
+
+                                "atx_switch_gpio": {
+                                        "pin": 7,
+                                        "inverted": "false"
+                                }
+                        }
+                ]
+        }
+}
+
+## Post-Install
+After installing Wt-RPM, the program needs some special capabilities to run as a normal user. Please run the following:
+
+setcap "CAP_NET_RAW=+ep CAP_SYS_RAWIO=+ep" /usr/bin/wt_rpm
+
+Please also make sure that the user has the right to write to /dev/mem.
+
+### Systemd
+
+If you are able to execute wt_rpm properly, you can use the shipped systemd unit (configured for the user wtrpm).
