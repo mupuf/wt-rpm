@@ -36,6 +36,8 @@ public:
 	void addView(View* view);
 	bool deleteView(std::string sessionId);
 
+	bool powerLedState(const Wt::WString &computerName);
+
 	/* input events */
 	virtual void atx_force_off(const Wt::WString &computerName) = 0;
 	virtual void atx_force_on(const Wt::WString &computerName) = 0;

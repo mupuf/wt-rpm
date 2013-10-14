@@ -137,3 +137,8 @@ bool AbstractRPM::deleteView(std::string sessionId)
 
 	return ret;
 }
+
+bool AbstractRPM::powerLedState(const Wt::WString &computerName)
+{
+	return this->_powerLedState[computerName];
+}
