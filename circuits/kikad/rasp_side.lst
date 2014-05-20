@@ -1,0 +1,68 @@
+eeschema (2013-may-18)-stable  >> Creation date: Sat 17 May 2014 03:23:00 CEST
+#Cmp ( order = Reference )
+| J1         RJ45        
+| J2         RJ45        
+| J3         RJ45        
+| J4         RJ45        
+| OC1        6N138       
+| OC2        6N138       
+| OC3        6N138       
+| OC4        6N138       
+| OC5        6N138       
+| OC6        6N138       
+| OC7        6N138       
+| OC8        6N138       
+| OC9        6N138       
+| OC10       6N138       
+| OC11       6N138       
+| OC12       6N138       
+| P1         CONN_13X2   
+| R1         4k          
+| R2         10k         
+| R3         1.2k        
+| R4         1.2k        
+| R5         4k          
+| R6         10k         
+| R7         1.2k        
+| R8         1.2k        
+| R9         4k          
+| R10        10k         
+| R11        1.2k        
+| R12        1.2k        
+| R?         1.2k        
+#End Cmp
+
+#Cmp ( order = Value )
+| RJ45         J1        
+| RJ45         J2        
+| 1.2k         R?        
+| RJ45         J3        
+| RJ45         J4        
+| 6N138        OC1       
+| 6N138        OC2       
+| 6N138        OC3       
+| 6N138        OC4       
+| 6N138        OC5       
+| 6N138        OC6       
+| 6N138        OC7       
+| 6N138        OC8       
+| 6N138        OC9       
+| 6N138        OC10      
+| 6N138        OC11      
+| 6N138        OC12      
+| CONN_13X2    P1        
+| 1.2k         R3        
+| 1.2k         R4        
+| 1.2k         R7        
+| 1.2k         R8        
+| 1.2k         R11       
+| 1.2k         R12       
+| 4k           R1        
+| 4k           R5        
+| 4k           R9        
+| 10k          R2        
+| 10k          R6        
+| 10k          R10       
+#End Cmp
+
+#End List
