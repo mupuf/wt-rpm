@@ -1,9 +1,10 @@
-eeschema (2013-may-18)-stable  >> Creation date: Sat 17 May 2014 03:23:00 CEST
+eeschema (2013-may-18)-stable  >> Creation date: Fri 23 May 2014 21:10:57 CEST
 #Cmp ( order = Reference )
 | J1         RJ45        
 | J2         RJ45        
 | J3         RJ45        
 | J4         RJ45        
+| J5         RJ45        
 | OC1        6N138       
 | OC2        6N138       
 | OC3        6N138       
@@ -16,6 +17,9 @@ eeschema (2013-may-18)-stable  >> Creation date: Sat 17 May 2014 03:23:00 CEST
 | OC10       6N138       
 | OC11       6N138       
 | OC12       6N138       
+| OC13       6N138       
+| OC14       6N138       
+| OC15       6N138       
 | P1         CONN_13X2   
 | R1         4k          
 | R2         10k         
@@ -29,15 +33,22 @@ eeschema (2013-may-18)-stable  >> Creation date: Sat 17 May 2014 03:23:00 CEST
 | R10        10k         
 | R11        1.2k        
 | R12        1.2k        
-| R?         1.2k        
+| R13        4k          
+| R14        10k         
+| R15        1.2k        
+| R16        1.2k        
+| R17        4k          
+| R18        10k         
+| R19        1.2k        
+| R20        1.2k        
 #End Cmp
 
 #Cmp ( order = Value )
 | RJ45         J1        
 | RJ45         J2        
-| 1.2k         R?        
 | RJ45         J3        
 | RJ45         J4        
+| RJ45         J5        
 | 6N138        OC1       
 | 6N138        OC2       
 | 6N138        OC3       
@@ -50,6 +61,9 @@ eeschema (2013-may-18)-stable  >> Creation date: Sat 17 May 2014 03:23:00 CEST
 | 6N138        OC10      
 | 6N138        OC11      
 | 6N138        OC12      
+| 6N138        OC13      
+| 6N138        OC14      
+| 6N138        OC15      
 | CONN_13X2    P1        
 | 1.2k         R3        
 | 1.2k         R4        
@@ -57,12 +71,20 @@ eeschema (2013-may-18)-stable  >> Creation date: Sat 17 May 2014 03:23:00 CEST
 | 1.2k         R8        
 | 1.2k         R11       
 | 1.2k         R12       
+| 1.2k         R15       
+| 1.2k         R16       
+| 1.2k         R19       
+| 1.2k         R20       
 | 4k           R1        
 | 4k           R5        
 | 4k           R9        
+| 4k           R13       
+| 4k           R17       
 | 10k          R2        
 | 10k          R6        
 | 10k          R10       
+| 10k          R14       
+| 10k          R18       
 #End Cmp
 
 #End List
