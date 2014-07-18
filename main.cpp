@@ -7,6 +7,7 @@
 #include "confparser.h"
 #include "abstractrpm.h"
 #include "rasprpm.h"
+#include "dummy_rpm.h"
 
 #include <memory>
 
@@ -23,6 +24,10 @@ bool createRPM(std::shared_ptr<Wt::WServer> server)
 		return true;
 	}
 #endif
+	if (backend == "dummy_rpm") {
+		rpm.reset(new DummyRPM(server, parser.rpmBackendConfiguration()));
+		return true;
+	}
 
 	std::cerr << "Cannot allocate the RPM backend '" << backend.toUTF8() << "'" << std::endl;
 	return false;
