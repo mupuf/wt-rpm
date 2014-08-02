@@ -6,6 +6,34 @@
 
 #include <Wt/WDate>
 #include <Wt/WTime>
+#include <Wt/WApplication>
+#include <Wt/WEnvironment>
+#include <Wt/Utils>
+
+#include <boost/algorithm/string.hpp>
+
+std::string AbstractRPM::currentUser() const
+{
+	if (!Wt::WApplication::instance())
+		return "";
+
+	std::string auth = Wt::WApplication::instance()->environment().headerValue("Authorization");
+	if (auth.length() < 7) {
+		std::cerr << "Auth too short";
+		return "";
+	}
+
+	if (strncmp(auth.c_str(), "Basic ", 6) != 0) {
+		std::cerr << "Auth does not start with 'Basic '";
+		return "";
+	}
+
+	std::vector<std::string> strs;
+	std::string credentials = Wt::Utils::base64Decode(std::string(auth.c_str() + 6));
+	boost::split(strs, credentials, boost::is_any_of(":"));
+
+	return strs[0];
+}
 
 AbstractRPM::AbstractRPM(std::shared_ptr<Wt::WServer> server) : server(server)
 {
@@ -40,7 +68,11 @@ void AbstractRPM::consoleAddData(const Wt::WString &computerName, const Wt::WStr
 {
 	Wt::WString date = Wt::WDate::currentServerDate().toString("yyyy/MM/dd");
 	Wt::WString time = Wt::WTime::currentServerTime().toString("hh:mm:ss");
-	Wt::WString entry = date + "-" + time + ": " + data + "\n";
+	std::string user = currentUser();
+	Wt::WString header = date + "-" + time;
+	if (!user.empty())
+		header += ": " + user;
+	Wt::WString entry = header + ": " + data + "\n";
 
 	computerStateLock.lock();
 	Wt::WString logs = entry + _computerLogs[computerName];

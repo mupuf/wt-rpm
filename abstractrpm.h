@@ -23,6 +23,8 @@ private:
 	boost::mutex viewsLock;
 	std::map< std::string, View* > views;
 
+	std::string currentUser() const;
+
 protected:
 	void setPowerLedState(const Wt::WString &computerName, bool state);
 	void consoleAddData(const Wt::WString &computerName, const Wt::WString &data);
