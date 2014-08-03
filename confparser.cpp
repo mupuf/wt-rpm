@@ -67,7 +67,7 @@ ConfParser::ConfParser()
 		}
 		this->_backend = backend;
 
-		_backendConfig = readJSONValue<Wt::Json::Object>(parsed_file, backend.toUTF8());
+		_backendConfig = readJSONValue<Wt::Json::Object>(parsed_file, "configuration");
 	}
 	catch (Wt::WException error)
 	{
