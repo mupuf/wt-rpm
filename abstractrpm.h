@@ -30,6 +30,9 @@ protected:
 		Gpio powerLed;
 		Gpio powerSwitch;
 		Gpio atxSwitch;
+
+		std::vector<Wt::WString> read_ACL;
+		std::vector<Wt::WString> write_ACL;
 	};
 	std::vector<Computer> _computers;
 
@@ -47,17 +50,22 @@ private:
 	boost::mutex pollingThreadsExitLock;
 	bool shouldExit;
 
+	enum AccesssType { READ = 0, WRITE };
+
 	bool parseConfiguration(Wt::Json::Object &conf);
 	bool parseComputer(Wt::Json::Object &computer);
 	Gpio parseGpio(Wt::Json::Object &gpio);
 
 	void setPingDelay(const Wt::WString &computerName, double delay);
-	std::string currentUser() const;
 	void pollInputs();
 	void pollPings();
 
+	std::string currentUser() const;
+	bool currentUserIsInAccessList(const Wt::WString &computerName,
+				       AccesssType type) const;
+
 protected:
-	const Computer *findComputer(const Wt::WString &computerName);
+	const Computer *findComputer(const Wt::WString &computerName) const;
 
 	void setPowerLedState(const Wt::WString &computerName, bool state);
 	void consoleAddData(const Wt::WString &computerName, const Wt::WString &data);

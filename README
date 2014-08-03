@@ -52,6 +52,8 @@ Here is a sample configuration file:
                         {
                                 "name": "pc1",
                                 "ip_address": "192.168.0.42",
+                                "read_acl": ["all"],
+                                "write_acl": [],
 
                                 "power_led_gpio": {
                                         "pin": 6,
@@ -70,8 +72,10 @@ Here is a sample configuration file:
                         },
 
                         {
-                                "name": "reator",
+                                "name": "pc2",
                                 "ip_address": "192.168.0.43",
+                                "read_acl": ["toto", "john"],
+                                "write_acl": ["toto"],
 
                                 "power_led_gpio": {
                                         "pin": 1,

@@ -20,7 +20,7 @@
 
 #include "confparser.h"
 
-const AbstractRPM::Computer *AbstractRPM::findComputer(const Wt::WString &computerName)
+const AbstractRPM::Computer *AbstractRPM::findComputer(const Wt::WString &computerName) const
 {
 	for (size_t i = 0; i < _computers.size(); i++) {
 		if (_computers.at(i).name == computerName)
@@ -62,6 +62,14 @@ bool AbstractRPM::parseComputer(Wt::Json::Object &computer)
 	Wt::Json::Object atxSwitch = readJSONValue<Wt::Json::Object>(computer, "atx_switch_gpio");
 	c.atxSwitch = parseGpio(atxSwitch);
 
+	Wt::Json::Array read_acl = readJSONValue<Wt::Json::Array>(computer, "read_acl");
+	for (size_t i = 0; i < read_acl.size(); i++)
+		c.read_ACL.push_back(read_acl[i].toString());
+
+	Wt::Json::Array write_acl = readJSONValue<Wt::Json::Array>(computer, "write_acl");
+	for (size_t i = 0; i < write_acl.size(); i++)
+		c.write_ACL.push_back(write_acl[i].toString());
+
 	c.ping = PING_MISSING;
 
 	if (c.name == Wt::WString())
@@ -81,30 +89,6 @@ AbstractRPM::Gpio AbstractRPM::parseGpio(Wt::Json::Object &gpio)
 
 	return g;
 }
-
-std::string AbstractRPM::currentUser() const
-{
-	if (!Wt::WApplication::instance())
-		return "";
-
-	std::string auth = Wt::WApplication::instance()->environment().headerValue("Authorization");
-	if (auth.length() < 7) {
-		std::cerr << "Auth too short";
-		return "";
-	}
-
-	if (strncmp(auth.c_str(), "Basic ", 6) != 0) {
-		std::cerr << "Auth does not start with 'Basic '";
-		return "";
-	}
-
-	std::vector<std::string> strs;
-	std::string credentials = Wt::Utils::base64Decode(std::string(auth.c_str() + 6));
-	boost::split(strs, credentials, boost::is_any_of(":"));
-
-	return strs[0];
-}
-
 
 void AbstractRPM::pollInputs()
 {
@@ -178,6 +162,53 @@ void AbstractRPM::pollPings()
 
 	ping_destroy(pingContext);
 #endif
+}
+
+std::string AbstractRPM::currentUser() const
+{
+	if (!Wt::WApplication::instance())
+		return "";
+
+	std::string auth = Wt::WApplication::instance()->environment().headerValue("Authorization");
+	if (auth.length() < 7) {
+		std::cerr << "Auth too short";
+		return "";
+	}
+
+	if (strncmp(auth.c_str(), "Basic ", 6) != 0) {
+		std::cerr << "Auth does not start with 'Basic '";
+		return "";
+	}
+
+	std::vector<std::string> strs;
+	std::string credentials = Wt::Utils::base64Decode(std::string(auth.c_str() + 6));
+	boost::split(strs, credentials, boost::is_any_of(":"));
+
+	return strs[0];
+}
+
+bool AbstractRPM::currentUserIsInAccessList(const Wt::WString &computerName,
+					    AccesssType type) const
+{
+	const AbstractRPM::Computer *c = findComputer(computerName);
+	if (!c)
+		return false;
+
+	std::string cu = currentUser();
+
+	std::vector<Wt::WString> list;
+	if (type == READ)
+		list = c->read_ACL;
+	else if (type == WRITE)
+		list = c->write_ACL;
+	else
+		return false;
+
+	for (size_t i = 0; i < list.size(); i++)
+		if (list[i] == cu || list[i] == "all")
+			return true;
+
+	return list.size() == 0;
 }
 
 void AbstractRPM::startPolling()
@@ -271,6 +302,9 @@ void AbstractRPM::addView(View *view)
 	for (size_t i = 0; i < _computers.size(); i++) {
 		Wt::WString computerName = _computers[i].name;
 
+		if (!currentUserIsInAccessList(computerName, READ))
+			continue;
+
 		std::shared_ptr<ComputerView> computer(new ComputerView(view, computerName));
 
 		/* view --> backend */
@@ -313,6 +347,9 @@ void AbstractRPM::atx_force_off(const Wt::WString &computerName)
 		return;
 	}
 
+	if (!currentUserIsInAccessList(computerName, WRITE))
+		return;
+
 	writeGPIO(computer->atxSwitch, 1);
 
 	consoleAddData(computerName, "ATX force off");
@@ -326,6 +363,9 @@ void AbstractRPM::atx_force_on(const Wt::WString &computerName)
 		return;
 	}
 
+	if (!currentUserIsInAccessList(computerName, WRITE))
+		return;
+
 	writeGPIO(computer->atxSwitch, 0);
 
 	consoleAddData(computerName, "ATX force on");
@@ -338,6 +378,9 @@ void AbstractRPM::atx_reset(const Wt::WString &computerName)
 		consoleAddData(computerName, "Unknown computer '" + computerName + "'");
 		return;
 	}
+
+	if (!currentUserIsInAccessList(computerName, WRITE))
+		return;
 
 	writeGPIO(computer->atxSwitch, 1);
 	sleep(3);
@@ -354,6 +397,9 @@ void AbstractRPM::pw_switch_press(const Wt::WString &computerName)
 		return;
 	}
 
+	if (!currentUserIsInAccessList(computerName, WRITE))
+		return;
+
 	writeGPIO(computer->powerSwitch, 1);
 	usleep(250000);
 	writeGPIO(computer->powerSwitch, 0);
@@ -368,6 +414,9 @@ void AbstractRPM::pw_switch_force_off(const Wt::WString &computerName)
 		consoleAddData(computerName, "Unknown computer '" + computerName + "'");
 		return;
 	}
+
+	if (!currentUserIsInAccessList(computerName, WRITE))
+		return;
 
 	writeGPIO(computer->powerSwitch, 1);
 	sleep(10);
