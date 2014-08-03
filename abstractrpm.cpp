@@ -305,7 +305,9 @@ void AbstractRPM::addView(View *view)
 		if (!currentUserIsInAccessList(computerName, READ))
 			continue;
 
-		std::shared_ptr<ComputerView> computer(new ComputerView(view, computerName));
+		bool writeAccess = currentUserIsInAccessList(computerName, WRITE);
+
+		std::shared_ptr<ComputerView> computer(new ComputerView(view, computerName, writeAccess));
 
 		/* view --> backend */
 		computer->sig_atxForceOff.connect(boost::bind(&AbstractRPM::atx_force_off, this, computerName));

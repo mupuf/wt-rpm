@@ -40,7 +40,10 @@ private:
 	Wt::WFileResource *getImg(const Wt::WString &name);
 	void setPowerLedStatus(bool status);
 public:
-	ComputerView(Wt::WApplication *app, const Wt::WString &computerName, Wt::WContainerWidget *parent = NULL);
+	ComputerView(Wt::WApplication *app,
+		     const Wt::WString &computerName,
+		     bool writeAccess,
+		     Wt::WContainerWidget *parent = NULL);
 
 	Wt::WString computerName() const { return _computerName; };
 

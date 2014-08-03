@@ -58,7 +58,8 @@ void ComputerView::setPowerLedStatus(bool status)
 		_img_led->setImageLink(_ico_led_off_file.get());
 }
 
-ComputerView::ComputerView(Wt::WApplication *app, const Wt::WString &computerName, Wt::WContainerWidget *parent) :
+ComputerView::ComputerView(Wt::WApplication *app, const Wt::WString &computerName,
+bool writeAccess, Wt::WContainerWidget *parent) :
 	Wt::WContainerWidget(parent),
 	app(app), _computerName(computerName), _img_led(NULL)
 {
@@ -75,6 +76,12 @@ ComputerView::ComputerView(Wt::WApplication *app, const Wt::WString &computerNam
 	_btn_atx_reset = new Wt::WPushButton("Reset");
 	_btn_pw_switch_press = new Wt::WPushButton("Press");
 	_btn_pw_switch_force_off = new Wt::WPushButton("Force off");
+
+	_btn_atx_force_off->setEnabled(writeAccess);
+	_btn_atx_force_on->setEnabled(writeAccess);
+	_btn_atx_reset->setEnabled(writeAccess);
+	_btn_pw_switch_press->setEnabled(writeAccess);
+	_btn_pw_switch_force_off->setEnabled(writeAccess);
 
 	_btn_atx_force_off->clicked().connect(this, &ComputerView::btn_atx_force_off_clicked);
 	_btn_atx_force_on->clicked().connect(this, &ComputerView::btn_atx_force_on_clicked);
