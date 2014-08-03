@@ -13,9 +13,12 @@
 #include <Wt/WEnvironment>
 #include <Wt/Utils>
 
-#include "confparser.h"
-
+#ifdef USE_PING
+	#include "oping.h"
+#endif
 #define PING_MISSING -1000.0
+
+#include "confparser.h"
 
 const AbstractRPM::Computer *AbstractRPM::findComputer(const Wt::WString &computerName)
 {
@@ -102,7 +105,89 @@ std::string AbstractRPM::currentUser() const
 	return strs[0];
 }
 
-AbstractRPM::AbstractRPM(std::shared_ptr<Wt::WServer> server, Wt::Json::Object conf) : server(server)
+
+void AbstractRPM::pollInputs()
+{
+	while (1)
+	{
+		{
+			boost::lock_guard<boost::mutex> lock(pollingThreadsExitLock);
+			if (shouldExit)
+				return;
+		}
+
+		for (size_t i = 0; i < _computers.size(); i++)
+		{
+			if (gpioIsValid(_computers[i].powerLed)) {
+				bool powerLedOn = readGPIO(_computers[i].powerLed);
+				setPowerLedState(_computers[i].name, powerLedOn);
+			}
+		}
+
+		usleep(1000000);
+	}
+}
+
+void AbstractRPM::pollPings()
+{
+#ifdef USE_PING
+	pingobj_t *pingContext = ping_construct();
+
+	std::map<Wt::WString, Wt::WString> ipToComputer;
+
+	double timeout = 0.1;
+	if (ping_setopt(pingContext, PING_OPT_TIMEOUT, (void *)&timeout))
+		std::cerr << "ping_setopt failed: " << ping_get_error(pingContext) << std::endl;
+
+	for (size_t i = 0; i < _computers.size(); i++) {
+		if (_computers[i].ipAddress != Wt::WString()) {
+			if (ping_host_add(pingContext, _computers[i].ipAddress.toUTF8().c_str()))
+				std::cerr << "ping_host_add failed: " << ping_get_error(pingContext) << std::endl;
+			ipToComputer[_computers[i].ipAddress] = _computers[i].name;
+		}
+	}
+
+	while (1)
+	{
+		{
+			boost::lock_guard<boost::mutex> lock(pollingThreadsExitLock);
+			if (shouldExit)
+				break;
+		}
+
+		if (ping_send(pingContext) < 0)
+			std::cerr << "ping_send failed: " << ping_get_error(pingContext) << std::endl;
+
+		pingobj_iter_t *iter;
+		for (iter = ping_iterator_get(pingContext); iter != NULL; iter = ping_iterator_next(iter)) {
+			double ping;
+			size_t size = sizeof(double);
+			if (ping_iterator_get_info(iter, PING_INFO_LATENCY, (void*)&ping, &size))
+				std::cerr << "ping_iterator_get_info/latency failed" << std::endl;
+
+			char hostname[101];
+			size_t hostname_len = sizeof(hostname);
+			if (ping_iterator_get_info(iter, PING_INFO_USERNAME, (void*)hostname, &hostname_len))
+				std::cerr << "ping_iterator_get_info/hostname failed" << std::endl;
+
+			setPingDelay(ipToComputer[hostname], ping);
+		}
+
+		sleep(1);
+	}
+
+	ping_destroy(pingContext);
+#endif
+}
+
+void AbstractRPM::startPolling()
+{
+	gpioPollingThread = boost::thread(&AbstractRPM::pollInputs, this);
+	pingPollingThread = boost::thread(&AbstractRPM::pollPings, this);
+}
+
+AbstractRPM::AbstractRPM(std::shared_ptr<Wt::WServer> server, Wt::Json::Object conf) :
+		server(server), shouldExit(false)
 {
 	parseConfiguration(conf);
 }
@@ -220,7 +305,93 @@ bool AbstractRPM::deleteView(std::string sessionId)
 	return ret;
 }
 
+void AbstractRPM::atx_force_off(const Wt::WString &computerName)
+{
+	const Computer *computer = findComputer(computerName);
+	if (!computer) {
+		consoleAddData(computerName, "Unknown computer '" + computerName + "'");
+		return;
+	}
+
+	writeGPIO(computer->atxSwitch, 1);
+
+	consoleAddData(computerName, "ATX force off");
+}
+
+void AbstractRPM::atx_force_on(const Wt::WString &computerName)
+{
+	const Computer *computer = findComputer(computerName);
+	if (!computer) {
+		consoleAddData(computerName, "Unknown computer '" + computerName + "'");
+		return;
+	}
+
+	writeGPIO(computer->atxSwitch, 0);
+
+	consoleAddData(computerName, "ATX force on");
+}
+
+void AbstractRPM::atx_reset(const Wt::WString &computerName)
+{
+	const Computer *computer = findComputer(computerName);
+	if (!computer) {
+		consoleAddData(computerName, "Unknown computer '" + computerName + "'");
+		return;
+	}
+
+	writeGPIO(computer->atxSwitch, 1);
+	sleep(3);
+	writeGPIO(computer->atxSwitch, 0);
+
+	consoleAddData(computerName, "ATX reset");
+}
+
+void AbstractRPM::pw_switch_press(const Wt::WString &computerName)
+{
+	const Computer *computer = findComputer(computerName);
+	if (!computer) {
+		consoleAddData(computerName, "Unknown computer '" + computerName + "'");
+		return;
+	}
+
+	writeGPIO(computer->powerSwitch, 1);
+	usleep(250000);
+	writeGPIO(computer->powerSwitch, 0);
+
+	consoleAddData(computerName, "Power switch pressed");
+}
+
+void AbstractRPM::pw_switch_force_off(const Wt::WString &computerName)
+{
+	const Computer *computer = findComputer(computerName);
+	if (!computer) {
+		consoleAddData(computerName, "Unknown computer '" + computerName + "'");
+		return;
+	}
+
+	writeGPIO(computer->powerSwitch, 1);
+	sleep(10);
+	writeGPIO(computer->powerSwitch, 0);
+
+	consoleAddData(computerName, "Power switch forced off");
+}
+
 bool AbstractRPM::powerLedState(const Wt::WString &computerName)
 {
 	return this->_powerLedState[computerName];
+}
+
+bool AbstractRPM::gpioIsValid(const struct Gpio &/*gpio*/)
+{
+	return false;
+}
+
+bool AbstractRPM::readGPIO(const struct Gpio &/*gpio*/)
+{
+	return false;
+}
+
+void AbstractRPM::writeGPIO(const struct Gpio &/*gpio*/, int /*value*/)
+{
+
 }
