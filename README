@@ -96,8 +96,54 @@ Here is a sample configuration file:
         }
 }
 
+## Authentication
+
+If you want to authenticate users before allowing them to list and control
+computers, you will need to use an http server such as nginx. Here is an example:
+
+worker_processes  1;
+events {
+    worker_connections  1024;
+}
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    keepalive_timeout  65;
+
+    gzip  on;
+
+    server {
+        listen       443 ssl;
+        server_name  localhost;
+        ssl_certificate /etc/nginx/ssl/nginx.crt;
+        ssl_certificate_key /etc/nginx/ssl/nginx.key;
+
+         # Wt
+        location /resources/ {
+            root   /usr/share/Wt/;
+            index  index.html index.htm;
+        }
+
+        location / {
+            root   /usr/share/nginx/html;
+            index  index.html index.htm;
+
+            auth_basic "WtRPM";
+            auth_basic_user_file /etc/nginx/htpasswd;
+
+            proxy_pass http://127.0.0.1:9090/;
+        }
+    }
+}
+
+Don't forget to use SSL otherwise, the passwords will be sent through the network
+in plain text!
+
 ## Post-Install
-After installing Wt-RPM, the program needs some special capabilities to run as a normal user. Please run the following:
+
+After installing Wt-RPM, the program needs some special capabilities to run as
+a normal user. Please run the following:
 
 setcap "CAP_NET_RAW=+ep CAP_SYS_RAWIO=+ep" /usr/bin/wt_rpm
 
@@ -105,4 +151,5 @@ Please also make sure that the user has the right to write to /dev/mem.
 
 ### Systemd
 
-If you are able to execute wt_rpm properly, you can use the shipped systemd unit (configured for the user wtrpm).
+If you are able to execute wt_rpm properly, you can use the shipped systemd
+unit (configured for the user wtrpm).
