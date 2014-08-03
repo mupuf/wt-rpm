@@ -2,7 +2,6 @@
 #include "computerview.h"
 #include "view.h"
 
-#include <boost/signal.hpp>
 #include <boost/bind.hpp>
 #include <boost/algorithm/string.hpp>
 

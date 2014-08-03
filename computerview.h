@@ -3,7 +3,7 @@
 
 #include <Wt/WContainerWidget>
 #include <Wt/WString>
-#include <boost/signal.hpp>
+#include <boost/signals2.hpp>
 
 class ComputerView : public Wt::WContainerWidget
 {
@@ -53,11 +53,11 @@ public:
 	void setPingDelay(double delay);
 
 	/* signals */
-	boost::signal<void ()> sig_atxForceOff;
-	boost::signal<void ()> sig_atxForceOn;
-	boost::signal<void ()> sig_atxReset;
-	boost::signal<void ()> sig_pwSwitchPress;
-	boost::signal<void ()> sig_pwSwitchForceOff;
+	boost::signals2::signal<void ()> sig_atxForceOff;
+	boost::signals2::signal<void ()> sig_atxForceOn;
+	boost::signals2::signal<void ()> sig_atxReset;
+	boost::signals2::signal<void ()> sig_pwSwitchPress;
+	boost::signals2::signal<void ()> sig_pwSwitchForceOff;
 };
 
 #endif // COMPUTERVIEW_H
