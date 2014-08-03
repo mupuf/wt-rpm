@@ -2,15 +2,82 @@
 #include "computerview.h"
 #include "view.h"
 
+#include <boost/signal.hpp>
 #include <boost/bind.hpp>
+#include <boost/algorithm/string.hpp>
 
+#include <Wt/Json/Array>
 #include <Wt/WDate>
 #include <Wt/WTime>
 #include <Wt/WApplication>
 #include <Wt/WEnvironment>
 #include <Wt/Utils>
 
-#include <boost/algorithm/string.hpp>
+#include "confparser.h"
+
+#define PING_MISSING -1000.0
+
+const AbstractRPM::Computer *AbstractRPM::findComputer(const Wt::WString &computerName)
+{
+	for (size_t i = 0; i < _computers.size(); i++) {
+		if (_computers.at(i).name == computerName)
+			return &_computers.at(i);
+	}
+
+	return NULL;
+}
+
+bool AbstractRPM::parseConfiguration(Wt::Json::Object &conf)
+{
+	Wt::Json::Array computers = readJSONValue<Wt::Json::Array>(conf, "computers");
+
+	if (computers.size() == 0) {
+		std::cerr << "AbstractRPM: No computers found in the configuration file." << std::endl;
+		return false;
+	}
+
+	for (size_t i = 0; i < computers.size(); i++) {
+		parseComputer(computers[i]);
+	}
+
+	return true;
+}
+
+bool AbstractRPM::parseComputer(Wt::Json::Object &computer)
+{
+	Computer c;
+
+	c.name = readJSONValue<Wt::WString>(computer, "name");
+	c.ipAddress = readJSONValue<Wt::WString>(computer, "ip_address");
+
+	Wt::Json::Object power_led = readJSONValue<Wt::Json::Object>(computer, "power_led_gpio");
+	c.powerLed = parseGpio(power_led);
+
+	Wt::Json::Object powerSwitch = readJSONValue<Wt::Json::Object>(computer, "power_switch_gpio");
+	c.powerSwitch = parseGpio(powerSwitch);
+
+	Wt::Json::Object atxSwitch = readJSONValue<Wt::Json::Object>(computer, "atx_switch_gpio");
+	c.atxSwitch = parseGpio(atxSwitch);
+
+	c.ping = PING_MISSING;
+
+	if (c.name == Wt::WString())
+		return false;
+
+	_computers.push_back(c);
+
+	return true;
+}
+
+AbstractRPM::Gpio AbstractRPM::parseGpio(Wt::Json::Object &gpio)
+{
+	Gpio g;
+
+	g.pin = readJSONValue<int>(gpio, "pin", -1);
+	g.inverted = readJSONValue<Wt::WString>(gpio, "inverted", "false") == "true";
+
+	return g;
+}
 
 std::string AbstractRPM::currentUser() const
 {
@@ -35,9 +102,9 @@ std::string AbstractRPM::currentUser() const
 	return strs[0];
 }
 
-AbstractRPM::AbstractRPM(std::shared_ptr<Wt::WServer> server) : server(server)
+AbstractRPM::AbstractRPM(std::shared_ptr<Wt::WServer> server, Wt::Json::Object conf) : server(server)
 {
-
+	parseConfiguration(conf);
 }
 
 void AbstractRPM::setPowerLedState(const Wt::WString &computerName, bool state)
@@ -102,20 +169,6 @@ void AbstractRPM::setPingDelay(const Wt::WString &computerName, double delay)
 	viewsLock.unlock();
 }
 
-bool AbstractRPM::addComputer(const Wt::WString &computerName)
-{
-	bool ret = true;
-
-	computerStateLock.lock();
-	if (_computers.find(computerName) != _computers.end())
-		ret = false;
-	else
-		_computers.insert(computerName);
-	computerStateLock.unlock();
-
-	return ret;
-}
-
 void AbstractRPM::addView(View *view)
 {
 	bool alreadyExists = false;
@@ -130,10 +183,8 @@ void AbstractRPM::addView(View *view)
 	if (alreadyExists)
 		return;
 
-	computerStateLock.lock();
-	std::set<Wt::WString>::iterator it;
-	for (it = _computers.begin(); it != _computers.end(); ++it) {
-		Wt::WString computerName = *it;
+	for (size_t i = 0; i < _computers.size(); i++) {
+		Wt::WString computerName = _computers[i].name;
 
 		std::shared_ptr<ComputerView> computer(new ComputerView(view, computerName));
 
@@ -150,7 +201,6 @@ void AbstractRPM::addView(View *view)
 
 		view->addComputer(computerName, computer);
 	}
-	computerStateLock.unlock();
 }
 
 bool AbstractRPM::deleteView(std::string sessionId)

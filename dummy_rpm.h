@@ -11,30 +11,6 @@
 
 class DummyRPM : public AbstractRPM
 {
-	struct Gpio
-	{
-		int pin;
-		bool inverted;
-	};
-
-	struct Computer
-	{
-		Wt::WString name;
-		Wt::WString ipAddress;
-		double ping;
-
-		Gpio powerLed;
-		Gpio powerSwitch;
-		Gpio atxSwitch;
-	};
-
-	std::vector<Computer> _computers;
-	const Computer *findComputer(const Wt::WString &computerName);
-
-	bool parseConfiguration(Wt::Json::Object &conf);
-	bool parseComputer(Wt::Json::Object &computer);
-	Gpio parseGpio(Wt::Json::Object &gpio);
-
 	boost::thread gpioPollingThread;
 	boost::thread pingPollingThread;
 	boost::mutex pollingThreadsExitLock;

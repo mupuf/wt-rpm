@@ -2,85 +2,15 @@
 
 #include "dummy_rpm.h"
 
-#include <signal.h>
-
 #include <iostream>
 #include <cstdlib>
-#include <boost/asio.hpp>
-#include <boost/bind.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
 
 #ifdef USE_PING
 	#include "oping.h"
 #endif
 
-#include <Wt/Json/Array>
-#include "confparser.h"
-
 #define PING_MISSING -1000.0
 #define PING_TIMEOUT -1.0
-
-const DummyRPM::Computer *DummyRPM::findComputer(const Wt::WString &computerName)
-{
-	for (size_t i = 0; i < _computers.size(); i++) {
-		if (_computers.at(i).name == computerName)
-			return &_computers.at(i);
-	}
-
-	return NULL;
-}
-
-bool DummyRPM::parseConfiguration(Wt::Json::Object &conf)
-{
-	Wt::Json::Array computers = readJSONValue<Wt::Json::Array>(conf, "computers");
-
-	if (computers.size() == 0) {
-		std::cerr << "DummyRPM: No computers found in the configuration file." << std::endl;
-		return false;
-	}
-
-	for (size_t i = 0; i < computers.size(); i++) {
-		parseComputer(computers[i]);
-	}
-
-	return true;
-}
-
-bool DummyRPM::parseComputer(Wt::Json::Object &computer)
-{
-	Computer c;
-
-	c.name = readJSONValue<Wt::WString>(computer, "name");
-	c.ipAddress = readJSONValue<Wt::WString>(computer, "ip_address");
-
-	Wt::Json::Object power_led = readJSONValue<Wt::Json::Object>(computer, "power_led_gpio");
-	c.powerLed = parseGpio(power_led);
-
-	Wt::Json::Object powerSwitch = readJSONValue<Wt::Json::Object>(computer, "power_switch_gpio");
-	c.powerSwitch = parseGpio(powerSwitch);
-
-	Wt::Json::Object atxSwitch = readJSONValue<Wt::Json::Object>(computer, "atx_switch_gpio");
-	c.atxSwitch = parseGpio(atxSwitch);
-
-	c.ping = PING_MISSING;
-
-	if (c.name == Wt::WString())
-		return false;
-
-	_computers.push_back(c);
-
-	return true;
-}
-
-DummyRPM::Gpio DummyRPM::parseGpio(Wt::Json::Object &gpio)
-{
-	Gpio g;
-
-	g.pin = readJSONValue<int>(gpio, "pin", -1);
-	g.inverted = readJSONValue<Wt::WString>(gpio, "inverted", "false") == "true";
-
-	return g;
-}
 
 void DummyRPM::pollInputs()
 {
@@ -155,13 +85,8 @@ void DummyRPM::pollPings()
 }
 
 DummyRPM::DummyRPM(std::shared_ptr<Wt::WServer> server, Wt::Json::Object conf) :
-	AbstractRPM(server), shouldExit(false)
+	AbstractRPM(server, conf), shouldExit(false)
 {
-	parseConfiguration(conf);
-
-	for (size_t i = 0; i < _computers.size(); i++)
-		addComputer(_computers[i].name);
-
 	gpioPollingThread = boost::thread(&DummyRPM::pollInputs, this);
 	pingPollingThread = boost::thread(&DummyRPM::pollPings, this);
 }
