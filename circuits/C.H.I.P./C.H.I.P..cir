@@ -1,0 +1,12 @@
+* /home/mupuf/Programmation/wt-rpm/circuits/C.H.I.P./C.H.I.P..cir
+
+* EESchema Netlist Version 1.1 (Spice format) creation date: Mon 01 Aug 2016 23:05:57 EEST
+
+* To exclude a component from the Spice Netlist add [Spice_Netlist_Enabled] user FIELD set to: N
+* To reorder the component spice node sequence add [Spice_Node_Sequence] user FIELD and define sequence: 2,1,0
+
+* Sheet Name: /
+J13  GND VCHG +5V GND +3.3V ? +1.8V VBAT ? ? ? GND ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? GND ? DIP-HEADER-2x20		
+J14  GND +5V ? ? ? ? ? ? +3.3V ? ? ? ? ? ? ? ? ? ? ? GND GND ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? GND GND DIP-HEADER-2x20		
+
+.end
