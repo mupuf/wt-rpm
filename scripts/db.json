@@ -1,0 +1,85 @@
+{
+    "gpios": {
+        "machine1_atx": {
+            "connected": "true",
+            "input": false,
+            "inverted": false,
+            "label": "ATX switch",
+            "name": "gpio1015"
+        },
+        "machine1_led": {
+            "connected": "true",
+            "input": "true",
+            "inverted": false,
+            "label": "Power LED",
+            "name": "gpio1013"
+        },
+        "machine1_pwr": {
+            "connected": "true",
+            "input": false,
+            "inverted": false,
+            "label": "Power switch",
+            "name": "gpio1018"
+        },
+        "machine1_rst": {
+            "connected": "true",
+            "input": false,
+            "inverted": false,
+            "label": "Reset switch",
+            "name": "gpio1020"
+        },
+        "machine2_atx": {
+            "connected": "true",
+            "input": false,
+            "inverted": false,
+            "label": "ATX switch",
+            "name": "gpio1016"
+        },
+        "machine2_led": {
+            "connected": "true",
+            "input": "true",
+            "inverted": false,
+            "label": "Power LED",
+            "name": "gpio1014"
+        },
+        "machine2_pwr": {
+            "connected": "true",
+            "input": false,
+            "inverted": false,
+            "label": "Power switch",
+            "name": "gpio1017"
+        },
+        "machine2_rst": {
+            "connected": "true",
+            "input": false,
+            "inverted": false,
+            "label": "Reset switch",
+            "name": "gpio1019"
+        }
+    },
+    "machines": {
+        "machine1": {
+            "gpios": [
+                "machine1_led",
+                "machine1_atx",
+                "machine1_pwr",
+                "machine1_rst"
+            ],
+            "name": "Reator"
+        },
+        "machine2": {
+            "gpios": [
+                "machine2_led",
+                "machine2_atx",
+                "machine2_pwr",
+                "machine2_rst"
+            ],
+            "name": ""
+        }
+    },
+    "version": 1,
+    "wtrpm": {
+        "host": "home.mupuf.org",
+        "port": 4242
+    }
+}
